@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:padding="12dp"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".RequestModule.RequestDetailsActivity">
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="36dp"
+        android:fontFamily="@font/lato_bold"
+        android:text="Blood Request Details"
+        android:textAlignment="center"
+        android:textColor="@color/primary_red"
+        android:textSize="24sp" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="149dp"
+        android:background="@drawable/rounded_top_background"
+        android:orientation="vertical"
+        android:paddingHorizontal="5dp"
+        android:paddingVertical="20dp">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/lato_bold"
+                android:text="Blood Type: "
+                android:textColor="@color/primary_red"
+                android:textSize="18sp" />
+            <TextView
+                android:id="@+id/detail_blood_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/lato_bold"
+                android:layout_marginLeft="10dp"
+                android:textSize="18sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/lato_bold"
+                android:textColor="@color/primary_red"
+                android:text="Requested By: "
+                android:textSize="18sp" />
+            <TextView
+                android:id="@+id/detail_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/lato_bold"
+                android:layout_marginLeft="10dp"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/lato_bold"
+                android:textColor="@color/primary_red"
+                android:text="City: "
+                android:textSize="18sp" />
+            <TextView
+                android:id="@+id/detail_user_city"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/lato_bold"
+                android:layout_marginLeft="10dp"
+                android:textSize="18sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/primary_red"
+                android:fontFamily="@font/lato_bold"
+                android:text="Description: "
+                android:textSize="18sp" />
+            <TextView
+                android:id="@+id/detail_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/lato_bold"
+                android:layout_marginLeft="10dp"
+                android:textSize="18sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginBottom="40dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/lato_bold"
+                android:textColor="@color/primary_red"
+                android:text="Urgency: "
+                android:textSize="18sp" />
+            <TextView
+                android:id="@+id/detail_urgent_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/lato_bold"
+                android:textSize="18sp"
+                android:layout_marginLeft="10dp"/>
+        </LinearLayout>
+
+
+
+
+
+
+
+        <Button
+            android:id="@+id/button_accept_request"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Accept Request" />
+    </LinearLayout>
+
+</RelativeLayout>

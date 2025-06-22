@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">B Donor App</string>
+
+    <string-array name="blood_types">
+        <item>A+</item>
+        <item>A-</item>
+        <item>B+</item>
+        <item>B-</item>
+        <item>AB+</item>
+        <item>AB-</item>
+        <item>O+</item>
+        <item>O-</item>
+    </string-array>
+    <string-array name="urgent_types">
+        <item>Normal</item>
+        <item>Urgent</item>
+        <item>Critical</item>
+    </string-array>
+    <string name="my_api_key">AIzaSyCVOj3fjoGClrb7j8eNgDS2BJHJ5g-6Xrc</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>

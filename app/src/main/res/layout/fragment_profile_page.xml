@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".UI.ProfilePageFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/lato_bold"
+        android:text="Profile"
+        android:textAlignment="center"
+        android:textColor="@color/primary_red"
+        android:textSize="24sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="62dp"
+        android:background="@drawable/rounded_top_background"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/profile_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:padding="2dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/profile_image"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Circle"
+
+                app:strokeWidth="2dp" />
+
+            <TextView
+                android:id="@+id/profile_BloodType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/blood_type_background"
+                android:gravity="center"
+                android:text="B+"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/editProfileButton"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:onClick="onClick_EditProfilePage"
+                android:src="@drawable/edit_profile_icon"
+                android:contentDescription="editProfile"
+                android:tint="@color/primary_red"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/profile_UserName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/lato_bold"
+            android:text="Ashen Fernando"
+            android:textAlignment="center"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/profile_City"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:fontFamily="@font/lato"
+            android:text="Colombo"
+            android:textAlignment="center"
+            android:textSize="16sp" />
+
+        <TextView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:fontFamily="@font/lato_bold"
+            android:text="Eligibility"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textColor="@color/primary_red"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_logOut"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Log out"
+            android:textSize="20sp"
+            android:padding="10dp"
+            android:layout_marginTop="70dp"/>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+
+
+
+
+
+    </LinearLayout>
+
+
+
+
+
+</RelativeLayout>

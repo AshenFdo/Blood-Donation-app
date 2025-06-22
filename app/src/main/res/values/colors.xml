@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary_red">#A51248</color>
+    <color name="secondary">#FFF8F2</color>
+    <color name="secondary_gray">#EDEDED</color>
+
+
+
+    <!-- Text Color -->
+    <color name="text_primary">#172426</color>
+    <color name="text_on_primary">#FFFFFF</color> <!-- For text on top of the primary color -->
+
+    <!-- Standard Colors -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+</resources>
