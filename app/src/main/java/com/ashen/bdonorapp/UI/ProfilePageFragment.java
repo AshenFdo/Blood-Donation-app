@@ -127,6 +127,11 @@ public class ProfilePageFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
+        fetchAndDisplayUserData();
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 
 

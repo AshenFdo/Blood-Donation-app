@@ -101,7 +101,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:fontFamily="@font/lato_bold"
-            android:text="Resend Requests"
+            android:text="Recend Requests"
             android:textColor="@color/primary_red"
             android:textSize="18sp" />
 

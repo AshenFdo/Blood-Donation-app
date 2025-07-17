@@ -107,136 +107,127 @@ public class UserDataManager {
         FirebaseUser user = mAuth.getCurrentUser();
         FirebaseUser eUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        if (user != null) {
+        if (user == null) {
+            listener.onUserDataLoadFailed("No user is currently signed in.");
+            return;
+        }
+
             // User is signed in, get their UID
             String userUid = user.getUid();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            //update email
+        // Counter to track completed operations
+        final int[] completedOperations = {0};
+        final int[] totalOperations = {0};
+        final boolean[] hasError = {false};
 
-            if(email != null && !email.isEmpty()) {
-                eUser.updateEmail(email)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Log.d(TAG, "User email address updated.");
-                                    Toast.makeText(null, "Profile updated successfully", Toast.LENGTH_SHORT).show();
+        // Count total operations needed
+        if (name != null && !name.isEmpty()) totalOperations[0]++;
+        if (email != null && !email.isEmpty()) totalOperations[0] += 2; // Auth + Firestore
+        if (city != null && !city.isEmpty()) totalOperations[0]++;
+        if (bloodType != null && !bloodType.isEmpty()) totalOperations[0]++;
 
-                                } else {
-                                    // Check if it failed because recent login is required
-                                    if (task.getException() instanceof FirebaseAuthRecentLoginRequiredException) {
-                                        Log.w(TAG, "User must re-authenticate before changing email.");
-                                        // *** IMPORTANT: Handle this error! ***
-                                        // You need to prompt the user to sign in again,
-                                        // then call user.reauthenticateWithCredential(),
-                                        // and *then* call updateEmail() again.
-                                        // Example: navigate to a re-authentication screen.
+        if (totalOperations[0] == 0) {
+            listener.onUserDataLoadFailed("No valid data to update");
+            return;
+        }
 
-                                    } else {
-                                        Log.w(TAG, "Failed to update user email.", task.getException());
-                                        // Handle other errors (e.g., email already in use, invalid email)
+        // Helper method to check if all operations are complete
+        Runnable checkCompletion = () -> {
+            completedOperations[0]++;
+            if (completedOperations[0] >= totalOperations[0]) {
+                if (!hasError[0]) {
+                    listener.onUserDataLoaded(name, email, bloodType, city);
+                }
+            }
+        };
+
+        user.updateEmail(email)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "User email address updated in Auth.");
+                        // Update email in Firestore
+                        db.collection("users").document(userUid)
+                                .update("email", email)
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d(TAG, "Email updated in Firestore.");
+                                    checkCompletion.run();
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.w(TAG, "Error updating email in Firestore", e);
+                                    if (!hasError[0]) {
+                                        hasError[0] = true;
+                                        listener.onUserDataLoadFailed("Failed to update email in database: " + e.getMessage());
                                     }
-                                }
-                            }
+                                });
+                    } else {
+                        Exception exception = task.getException();
+                        Log.w(TAG, "Failed to update user email in Auth.", exception);
 
-            });
-                db.collection("users")
-                        .document(userUid)
-                        .update("email", email)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "User name updated successfully.");
-                                Toast.makeText(null, "Profile updated successfully", Toast.LENGTH_SHORT).show();
-                                listener.onUserDataLoaded(name, email, bloodType,city);
+                        String errorMessage = "Failed to update email";
+                        if (exception instanceof FirebaseAuthRecentLoginRequiredException) {
+                            errorMessage = "Please sign out and sign in again before changing your email";
+                        } else if (exception != null) {
+                            errorMessage = "Failed to update email: " + exception.getMessage();
+                        }
 
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error updating user name", e);
-                                listener.onUserDataLoadFailed("Failed to update user name: " + e.getMessage());
-                                Toast.makeText(null, "Failed to update profile", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        if (!hasError[0]) {
+                            hasError[0] = true;
+                            listener.onUserDataLoadFailed(errorMessage);
+                        }
+                    }
+                });
 
-        } else {
-            // No user is signed in
-            Log.d(TAG, "No user signed in. Cannot update email.");
-            // Maybe prompt the user to sign in
+        // Update name
+        if (name != null && !name.isEmpty()) {
+            db.collection("users").document(userUid)
+                    .update("name", name)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d(TAG, "User name updated successfully.");
+                        checkCompletion.run();
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w(TAG, "Error updating user name", e);
+                        if (!hasError[0]) {
+                            hasError[0] = true;
+                            listener.onUserDataLoadFailed("Failed to update name: " + e.getMessage());
+                        }
+                    });
         }
 
+        // Update city
+        if (city != null && !city.isEmpty()) {
+            db.collection("users").document(userUid)
+                    .update("city", city)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d(TAG, "City updated successfully.");
+                        checkCompletion.run();
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w(TAG, "Error updating city", e);
+                        if (!hasError[0]) {
+                            hasError[0] = true;
+                            listener.onUserDataLoadFailed("Failed to update city: " + e.getMessage());
+                        }
+                    });
+        }
 
-
-            //Update User Name
-            if(name != null && !name.isEmpty()) {
-             db.collection("users")
-                        .document(userUid)
-                        .update("name", name)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "User name updated successfully.");
-                                Toast.makeText(null, "Profile updated successfully", Toast.LENGTH_SHORT).show();
-                                listener.onUserDataLoaded(name, email, bloodType,city);
-
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error updating user name", e);
-                                listener.onUserDataLoadFailed("Failed to update user name: " + e.getMessage());
-                                Toast.makeText(null, "Failed to update profile", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-            }
-
-            //Update City
-            if(city != null && !city.isEmpty()) {
-                db.collection("users")
-                        .document(userUid)
-                        .update("city", city)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "City updated successfully.");
-                                Toast.makeText(null, "Profile updated successfully", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error updating city", e);
-                                listener.onUserDataLoadFailed("Failed to update city: " + e.getMessage());
-                                Toast.makeText(null, "Failed to update profile", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-            }
-
-            //Update Blood Type
-            if(bloodType != null && !bloodType.isEmpty()) {
-                db.collection("users")
-                        .document(userUid)
-                        .update("bloodType", bloodType)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "Blood type updated successfully.");
-                                Toast.makeText(null, "Profile updated successfully", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error updating blood type", e);
-                                listener.onUserDataLoadFailed("Failed to update blood type: " + e.getMessage());
-                                Toast.makeText(null, "Failed to update profile", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-            }
+        // Update blood type
+        if (bloodType != null && !bloodType.isEmpty()) {
+            db.collection("users").document(userUid)
+                    .update("bloodType", bloodType)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d(TAG, "Blood type updated successfully.");
+                        checkCompletion.run();
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w(TAG, "Error updating blood type", e);
+                        if (!hasError[0]) {
+                            hasError[0] = true;
+                            listener.onUserDataLoadFailed("Failed to update blood type: " + e.getMessage());
+                        }
+                    });
+        }
 
 
 
@@ -247,7 +238,7 @@ public class UserDataManager {
 
 
 
-    }
+
 
     //Get current Blood type
     public String getCurrentUserName() {

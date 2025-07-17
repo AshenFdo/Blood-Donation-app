@@ -97,20 +97,21 @@ public class EditUserProfile extends AppCompatActivity {
                 new OnUserDataLoadedListener() {
                     @Override
                     public void onUserDataLoaded(String userName, String userEmail, String bloodType, String city) {
-                        progressBar.setVisibility(View.GONE);
-
+                        btn_changeProfile.setVisibility(View.VISIBLE); // Show button again
                         Toast.makeText(EditUserProfile.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
+                        finish(); // Return to previous screen
                     }
 
                     @Override
                     public void onUserDataLoadFailed(String errorMessage) {
                         progressBar.setVisibility(View.GONE);
+                        btn_changeProfile.setVisibility(View.VISIBLE); // Show button again
                         Toast.makeText(EditUserProfile.this, "Update failed: " + errorMessage, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
     public void onBackPressed(View view) {
-        startActivity(new android.content.Intent(this, ProfilePageFragment.class));
+       finish();
     }
 }
