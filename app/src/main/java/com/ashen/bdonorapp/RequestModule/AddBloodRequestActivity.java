@@ -13,6 +13,7 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.ashen.bdonorapp.Controller.RequestCallback;
 import com.ashen.bdonorapp.Models.BloodRequest;
 import com.ashen.bdonorapp.R;
 import com.ashen.bdonorapp.Controller.RequestDataManager;
@@ -25,8 +26,8 @@ public class AddBloodRequestActivity extends AppCompatActivity {
     private static final String TAG = "AddBloodRequestActivity";
 
     private Spinner bloodTypeSpinner;
-    private EditText descriptionEditText;
-    private Spinner urgentTypeSpinner;
+    private EditText descriptionEditText , titleEditText;
+
 
 
     private RadioButton urgent_radio_button;
@@ -49,6 +50,7 @@ public class AddBloodRequestActivity extends AppCompatActivity {
         descriptionEditText = findViewById(R.id.edit_text_description);
         urgent_radio_button = findViewById(R.id.urgent_radio_button);
         submitButton = findViewById(R.id.button_submit_request);
+        titleEditText = findViewById(R.id.edit_text_title);
 
         // Populate Spinners
         ArrayAdapter<CharSequence> bloodTypeAdapter = ArrayAdapter.createFromResource(this,
@@ -76,8 +78,9 @@ public class AddBloodRequestActivity extends AppCompatActivity {
         String bloodType = bloodTypeSpinner.getSelectedItem().toString();
         String description = descriptionEditText.getText().toString().trim();
         String urgentType = urgent_radio_button.isChecked() ? "Urgent" : "Normal";
-        String userId = currentUser.getUid();
-        String status = "Normal";
+        String postedByUserId = currentUser.getUid();
+        String title = titleEditText.getText().toString().trim();
+
 
         if (description.isEmpty()) {
             Toast.makeText(this, "Please enter a description.", Toast.LENGTH_SHORT).show();
@@ -88,7 +91,7 @@ public class AddBloodRequestActivity extends AppCompatActivity {
         submitButton.setText("Submitting...");
 
         // Get user data and create request
-        db.collection("users").document(userId).get()
+        db.collection("users").document(postedByUserId).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult().exists()) {
                         String userName = task.getResult().getString("name");
@@ -96,10 +99,10 @@ public class AddBloodRequestActivity extends AppCompatActivity {
 
                         if (userName != null && userCity != null) {
                             BloodRequest request = new BloodRequest(userName, userCity, bloodType,
-                                    description, urgentType, userId, "Normal");
+                                    title, postedByUserId, description, urgentType);
 
                             RequestDataManager requestManager = new RequestDataManager();
-                            requestManager.createBloodRequest(request, new RequestDataManager.RequestCallback() {
+                            requestManager.createBloodRequest(request, new RequestCallback() {
                                 @Override
                                 public void onSuccess(String message) {
                                     Toast.makeText(AddBloodRequestActivity.this, message, Toast.LENGTH_SHORT).show();

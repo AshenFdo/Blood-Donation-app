@@ -20,6 +20,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
+    final Fragment homeFragment = new HomeFragment();
+    final Fragment RequestPageFragment = new RequestPageFragment();
+    final Fragment MessagePageFragment = new MessagePageFragment();
+    final Fragment ProfilePageFragment = new ProfilePageFragment();
+
+    final FragmentManager fm = getSupportFragmentManager();
+    Fragment active = homeFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,42 +41,34 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
 
-        // Set the listener for item selection
+        // Add all fragments, but only show the home one
+        fm.beginTransaction().add(R.id.fragment_container, RequestPageFragment, "4").hide(RequestPageFragment).commit();
+        fm.beginTransaction().add(R.id.fragment_container, MessagePageFragment, "3").hide(MessagePageFragment).commit();
+        fm.beginTransaction().add(R.id.fragment_container, ProfilePageFragment, "2").hide(ProfilePageFragment).commit();
+        fm.beginTransaction().add(R.id.fragment_container, homeFragment, "1").commit();
+
         bottomNav.setOnItemSelectedListener(item -> {
-            Fragment selectedFragment = null;
-            int itemId = item.getItemId();
+            int itemId = item.getItemId(); // Get the ID once
 
             if (itemId == R.id.home_page) {
-                selectedFragment = new HomeFragment();
+                fm.beginTransaction().hide(active).show(homeFragment).commit();
+                active = homeFragment;
+                return true;
             } else if (itemId == R.id.request_page) {
-                selectedFragment = new RequestPageFragment();
+                fm.beginTransaction().hide(active).show(RequestPageFragment).commit();
+                active = RequestPageFragment;
+                return true;
             } else if (itemId == R.id.chat_page) {
-                selectedFragment = new MessagePageFragment();
+                fm.beginTransaction().hide(active).show(MessagePageFragment).commit();
+                active = MessagePageFragment;
+                return true;
             } else if (itemId == R.id.profile_page) {
-                selectedFragment = new ProfilePageFragment();
+                fm.beginTransaction().hide(active).show(ProfilePageFragment).commit();
+                active = ProfilePageFragment;
+                return true;
             }
-
-            // If a fragment is selected, replace the container with it
-            if (selectedFragment != null) {
-                loadFragment(selectedFragment);
-            }
-            return true; // Return true to display the item as the selected item
+            return false;
         });
-
-        // --- Load the default fragment ---
-        // This ensures that the Home page is displayed when the app starts
-        if (savedInstanceState == null) {
-            bottomNav.setSelectedItemId(R.id.home_page);
-        }
     }
-    private void loadFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        // Replace the contents of the container with the new fragment
-        fragmentTransaction.replace(R.id.fragment_container, fragment);
-
-        // Commit the transaction
-        fragmentTransaction.commit();
     }
-}

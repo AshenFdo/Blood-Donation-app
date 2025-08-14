@@ -1,6 +1,4 @@
 package com.ashen.bdonorapp.Models;
-import com.google.firebase.firestore.Exclude;
-import com.google.firebase.firestore.PropertyName;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
@@ -10,11 +8,13 @@ import java.util.Date;
 
     public class BloodRequest {
         private String userName;
+        private String postedByUserId;
+        private String acceptedByUserId;
+        private String title;
         private String userCity;
         private String bloodType;
         private String description;
         private String urgentType; // e.g., "Urgent", "Normal"
-        private String userId;
         private String status; // Unique identifier for the request
 
 
@@ -24,63 +24,49 @@ import java.util.Date;
         public  BloodRequest(){}
 
 
-        public BloodRequest(String userName, String userCity, String bloodType, String description, String urgentType, String userId,String status) {
+        public BloodRequest(
+                String userName,
+                String userCity,
+                String bloodType,
+                String title,
+                String postedByUserId,
+                String description,
+                String urgentType)
+        {
+
             this.userName = userName;
             this.userCity = userCity;
             this.bloodType = bloodType;
             this.description = description;
             this.urgentType = urgentType;
-            this.userId = userId;
-            this.status = status;
+            this.postedByUserId = postedByUserId;
+            this.title = title;
+            this.status = null;
+            this.acceptedByUserId = null;
+
         }
 
-        // Getters and Setters for all fields
-        public String getUserName() {
-            return userName;
-        }
+        // Getters and setters
+        public String getBloodType() { return bloodType; }
+        public void setBloodType(String bloodType) { this.bloodType = bloodType; }
 
-        public void setUserName(String userName) {
-            this.userName = userName;
-        }
+        public String getUserName() { return userName; }
+        public void setUserName(String userName) { this.userName = userName; }
 
-        public String getUserCity() {
-            return userCity;
-        }
+        public String getUserCity() { return userCity; }
+        public void setUserCity(String userCity) { this.userCity = userCity; }
 
-        public void setUserCity(String userCity) {
-            this.userCity = userCity;
-        }
+        public String getUrgentType() { return urgentType; }
 
-        public String getBloodType() {
-            return bloodType;
-        }
-
-        public void setBloodType(String bloodType) {
-            this.bloodType = bloodType;
-        }
-
-        public String getDescription() {
+        public  String getDescription(){
             return description;
         }
 
-        public void setDescription(String description) {
-            this.description = description;
+        public String getTitle() {
+            return title;
         }
-
-        public String getUrgentType() {
-            return urgentType;
-        }
-
-        public void setUrgentType(String urgentType) {
-            this.urgentType = urgentType;
-        }
-
-        public String getUserId() {
-            return userId;
-        }
-
-        public void setUserId(String userId) {
-            this.userId = userId;
+        public void setTitle(String title) {
+            this.title = title;
         }
 
         public Date getTimestamp() {
@@ -90,15 +76,12 @@ import java.util.Date;
         public void setTimestamp(Date timestamp) {
             this.timestamp = timestamp;
         }
+        public void setUrgentType(String urgentType) { this.urgentType = urgentType; }
 
-        public  String getStatus() {
-            return status;
-        }
+        public String getPostedByUserId() { return postedByUserId; }
+        public void setPostedByUserId(String postedByUserId) { this.postedByUserId = postedByUserId; }
 
-        public void setStatus(String status){
-            this.status = status;
-
-        }
-
+        public String getAcceptedByUserId() { return acceptedByUserId; }
+        public void setAcceptedByUserId(String acceptedByUserId) { this.acceptedByUserId = acceptedByUserId; }
     }
 

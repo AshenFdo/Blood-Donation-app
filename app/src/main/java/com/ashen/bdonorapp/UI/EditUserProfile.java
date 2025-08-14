@@ -2,13 +2,16 @@ package com.ashen.bdonorapp.UI;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -20,6 +23,8 @@ import com.google.android.material.button.MaterialButton;
 
 public class EditUserProfile extends AppCompatActivity {
     TextView editUsername, editEmail, editBloodType,editCity;
+
+    private AppCompatSpinner bloodTypeSpinner;
     String username, email, bloodType, city;
     ProgressBar progressBar;
     private AutoCompleteTextView autoCompleteBloodType;
@@ -47,15 +52,22 @@ public class EditUserProfile extends AppCompatActivity {
         editBloodType = findViewById(R.id.bloodType);
         btn_changeProfile = findViewById(R.id.button_changeProfile);
         progressBar = findViewById(R.id.progressBar);
+        bloodTypeSpinner = findViewById(R.id.spinner_blood_type);
 
         userDataManager = new UserDataManager();
+
+        // Populate Spinners
+        ArrayAdapter<CharSequence> bloodTypeAdapter = ArrayAdapter.createFromResource(this,
+                R.array.blood_types, android.R.layout.simple_spinner_item);
+        bloodTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        bloodTypeSpinner.setAdapter(bloodTypeAdapter);
+
 
         loadUserData();
 
         btn_changeProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 updateProfile();
             }
         });
@@ -70,8 +82,11 @@ public class EditUserProfile extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 if (userName != null) editUsername.setText(userName);
                 if (userEmail != null) editEmail.setText(userEmail);
-                if (bloodType != null) editBloodType.setText(bloodType);
-                if (city != null) editCity.setText(city);
+                if (bloodType != null) {
+                    ArrayAdapter adapter = (ArrayAdapter) bloodTypeSpinner.getAdapter();
+                    int position = adapter.getPosition(bloodType);
+                    if (position >= 0) bloodTypeSpinner.setSelection(position);
+                }                if (city != null) editCity.setText(city);
             }
 
             @Override
@@ -86,7 +101,7 @@ public class EditUserProfile extends AppCompatActivity {
     private void updateProfile() {
         String name = editUsername.getText().toString().trim();
         String email = editEmail.getText().toString().trim();
-        String bloodType = editBloodType.getText().toString().trim();
+        String bloodType = bloodTypeSpinner.getSelectedItem().toString().trim();
         String city = editCity.getText().toString().trim();
 
         progressBar.setVisibility(View.VISIBLE);

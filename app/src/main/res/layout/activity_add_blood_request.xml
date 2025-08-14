@@ -7,7 +7,6 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
     tools:context=".RequestModule.AddBloodRequestActivity">
 
     <TextView
@@ -24,13 +23,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="53dp"
-        android:layout_marginBottom="164dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="119dp"
         android:background="@drawable/rounded_top_background"
         android:orientation="vertical"
-        android:paddingHorizontal="10dp"
+        android:paddingHorizontal="15dp"
         android:paddingVertical="20dp">
 
         <TextView
@@ -46,8 +44,26 @@
             android:id="@+id/spinner_blood_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/edittext_background"
+            android:entries="@array/blood_types"
+            android:padding="10dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/lato_bold"
+            android:text="Title : "
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/edit_text_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:background="@drawable/edittext_background"
+            android:maxLength="20"
             android:entries="@array/blood_types"
             android:padding="10dp" />
 
@@ -62,7 +78,7 @@
         <EditText
             android:id="@+id/edit_text_description"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="180dp"
             android:layout_marginBottom="16dp"
             android:background="@drawable/edittext_background"
             android:gravity="top"
@@ -71,46 +87,52 @@
             android:minLines="3"
             android:padding="20dp" />
 
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="horizontal">
-           <TextView
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:fontFamily="@font/lato_bold"
-               android:text="Urgency:"
-               android:textSize="20sp"
-               android:layout_marginRight="20dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-           <RadioGroup
-               android:id="@+id/urgency_radio_group"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:fontFamily="@font/lato_bold"
+                android:text="Urgency:"
+                android:textSize="20sp" />
 
-               <RadioButton
-                   android:id="@+id/urgent_radio_button"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="Urgent"
-                   android:layout_marginRight="10dp"/>
+            <RadioGroup
+                android:id="@+id/urgency_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-               <RadioButton
-                   android:id="@+id/normal_radio_button"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="Normal"
-                   android:checked="true"/>
-           </RadioGroup>
+                <RadioButton
+                    android:id="@+id/urgent_radio_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:text="Urgent" />
 
-       </LinearLayout>
+                <RadioButton
+                    android:id="@+id/normal_radio_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Normal" />
+            </RadioGroup>
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/button_submit_request"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Submit Blood Request" />
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/lato_bold"
+            android:textColor="@color/white"
+            android:text="Submit Blood Request"
+            android:textSize="18sp" />
 
     </LinearLayout>
 

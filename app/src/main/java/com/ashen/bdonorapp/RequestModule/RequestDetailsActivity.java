@@ -8,14 +8,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ashen.bdonorapp.Adapters.BloodRequestAdapter;
+import com.ashen.bdonorapp.Controller.RequestCallback;
+import com.ashen.bdonorapp.Models.BloodRequest;
 import com.ashen.bdonorapp.R;
 import com.ashen.bdonorapp.Controller.RequestDataManager;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 public class RequestDetailsActivity extends AppCompatActivity {
 
-    private TextView bloodTypeTextView, userNameTextView, userCityTextView, descriptionTextView, urgentTypeTextView;
+    private TextView bloodTypeTextView, userNameTextView, userCityTextView, descriptionTextView, urgentTypeTextView , titleTextView;
     private Button acceptButton;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
@@ -33,54 +38,45 @@ public class RequestDetailsActivity extends AppCompatActivity {
         userNameTextView = findViewById(R.id.detail_user_name);
         userCityTextView = findViewById(R.id.detail_user_city);
         descriptionTextView = findViewById(R.id.detail_description);
+        titleTextView = findViewById(R.id.detail_title);
+
         urgentTypeTextView = findViewById(R.id.detail_urgent_type);
         acceptButton = findViewById(R.id.button_accept_request);
 
         // Get data from the Intent
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            String bloodType = extras.getString("bloodType");
-            String userName = extras.getString("userName");
-            String userCity = extras.getString("userCity");
-            String description = extras.getString("description");
-            String urgentType = extras.getString("urgentType");
-            requestId = extras.getString("requestId"); // Get the document ID
+        requestId = getIntent().getStringExtra("requestId");
 
-            bloodTypeTextView.setText(bloodType);
-            userNameTextView.setText(userName);
-            userCityTextView.setText(userCity);
-            descriptionTextView.setText(description);
-            urgentTypeTextView.setText(urgentType);
-        }
+        loadRequestDetails();
 
-        acceptButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                acceptBloodRequest();
-            }
-        });
+        acceptButton.setOnClickListener(v -> acceptRequest());
+
+
     }
 
-    private void acceptBloodRequest() {
-        RequestDataManager requestManager = new RequestDataManager();
 
-        requestManager.acceptBloodRequest(requestId, new RequestDataManager.RequestCallback() {
-            @Override
-            public void onSuccess(String message) {
-                Toast.makeText(RequestDetailsActivity.this, message, Toast.LENGTH_LONG).show();
-                finish();
-                // Close activity and return to previous screen
-                // Optionally, you can also refresh the request list in the previous activity
-                // For example, if you have a static method to refresh the list in RequestPageFragment:
+    private void loadRequestDetails() {
+        FirebaseFirestore.getInstance().collection("bloodRequests").document(requestId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        bloodTypeTextView.setText(documentSnapshot.getString("bloodType"));
+                        userNameTextView.setText(documentSnapshot.getString("userName"));
+                        userCityTextView.setText(documentSnapshot.getString("userCity"));
+                        urgentTypeTextView.setText(documentSnapshot.getString("urgentType"));
+                        descriptionTextView.setText(documentSnapshot.getString("description"));
+                        if (documentSnapshot.getString("title") != null) {
+                            titleTextView.setText(documentSnapshot.getString("title"));
+                        } else {
+                            titleTextView.setText("Blood Request");
+                        }
+                    }
+                });
+    }
 
-            }
-
-            @Override
-            public void onFailure(String errorMessage) {
-                Toast.makeText(RequestDetailsActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-            }
-        });
-
+    private void acceptRequest() {
+        FirebaseFirestore.getInstance().collection("bloodRequests").document(requestId)
+                .update("acceptedByUserId", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addOnSuccessListener(aVoid -> finish());
     }
 
 

@@ -3,6 +3,7 @@ package com.ashen.bdonorapp.Models;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
+import java.util.LinkedList;
 
 public class User {
     private String email;
@@ -15,6 +16,8 @@ public class User {
 
     private Date lastDonationDate;
 
+    private LinkedList<User> friendsList = new LinkedList<>();
+
 
     public User(String email, String userName, String bloodType,String uID) {
         this.email = email;
@@ -22,6 +25,9 @@ public class User {
         this.bloodType = bloodType;
         this.uid = uID;
     }
+
+    // Default constructor for Firestore
+    public User(){}
 
     // Getters and Setters for all fields...
     public String getUid() { return uid; }
@@ -38,6 +44,16 @@ public class User {
     public void setProfileImageUrl(String profileImageUrl) { this.profileImageUrl = profileImageUrl; }
     public Date getLastDonationDate() { return lastDonationDate; }
     public void setLastDonationDate(Date lastDonationDate) { this.lastDonationDate = lastDonationDate; }
+
+    public LinkedList<User> setAddFriend(User friend) {
+        if (friend != null && !friendsList.contains(friend)) {
+            friendsList.add(friend);
+        }
+        return friendsList;
+    }
+    public LinkedList<User> getFriendsList() {
+        return friendsList;
+    }
 
 
 

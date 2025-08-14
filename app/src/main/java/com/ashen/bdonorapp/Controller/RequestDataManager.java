@@ -21,21 +21,6 @@ public class RequestDataManager {
         mAuth = FirebaseAuth.getInstance();
     }
 
-    // Interface for request operations callbacks
-    public interface RequestCallback {
-        void onSuccess(String message);
-        void onFailure(String errorMessage);
-    }
-
-    // Interface for data retrieval
-    public interface RequestDataCallback {
-        void onRequestsLoaded(List<BloodRequest> requests);
-        void onRequestLoadFailed(String errorMessage);
-    }
-
-
-
-
     // Method to Cretae the blood Requests
     public void createBloodRequest(BloodRequest request, RequestCallback callback) {
         db.collection("bloodRequests")
@@ -61,7 +46,7 @@ public class RequestDataManager {
 
         if (requestId != null) {
             db.collection("bloodRequests").document(requestId)
-                    .update("acceptedBy", currentUser.getUid(), "status", "Accepted")
+                    .update("acceptedByUserId", currentUser.getUid(), "status", "Accepted")
                     .addOnSuccessListener(aVoid -> {
                         callback.onSuccess("Request accepted successfully!");
                     })
@@ -97,14 +82,13 @@ public class RequestDataManager {
     //Method to Get all active blood requests
     public Query getActiveRequestsQuery() {
         return db.collection("bloodRequests")
-                .whereNotEqualTo("status", "Accepted")
+                .whereEqualTo("acceptedByUserId", null)
                 .orderBy("timestamp", Query.Direction.DESCENDING);
     }
 
     // Method to get all requests made by a specific user
     public Query getUserRequestsQuery(String userId) {
         return db.collection("bloodRequests")
-                .whereEqualTo("userId", userId)
-                .orderBy("timestamp", Query.Direction.DESCENDING);
+                .whereEqualTo("userId", userId);
     }
 }

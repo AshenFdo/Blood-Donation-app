@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Source;
 
 public class UserDataManager {
 
@@ -46,13 +47,15 @@ public class UserDataManager {
         final String userEmail = user.getEmail();
         final String displayName = user.getDisplayName(); // Display name from Auth
         final String userUid = user.getUid();
+        Source source = Source.DEFAULT;// Use CACHE to get data from local cache if available, otherwise use SERVER
 
 
 
-        // Now fetch custom data (like blood type) from Firestore using the UID
+
+        // Now fetch custom data  from Firestore using the UID
         db.collection("users")
                 .document(userUid)
-                .get()
+                .get(source)
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
