@@ -58,8 +58,8 @@
 
             <ImageView
                 android:id="@+id/editProfileButton"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:onClick="onClick_EditProfilePage"
                 android:src="@drawable/edit_profile_icon"
                 android:contentDescription="editProfile"
@@ -89,16 +89,7 @@
             android:textAlignment="center"
             android:textSize="16sp" />
 
-        <TextView
 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:fontFamily="@font/lato_bold"
-            android:text="Eligibility"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:textColor="@color/primary_red"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_logOut"

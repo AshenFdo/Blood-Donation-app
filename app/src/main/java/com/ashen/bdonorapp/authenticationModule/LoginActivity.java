@@ -19,7 +19,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.ashen.bdonorapp.MainActivity;
 import com.ashen.bdonorapp.R;
-import com.ashen.bdonorapp.TextActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
@@ -34,7 +33,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private TextInputEditText editEmail,editPassword;
     private ProgressBar progressBar;
-
     private MaterialButton loginButton;
     private FirebaseAuth mAuth;
 
@@ -49,24 +47,25 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
-        // --- Step 1: Initialize Firebase and UI ---
+        // Initialize Firebase
         mAuth = FirebaseAuth.getInstance();
 
+        // Initialize UI elements
         editEmail = findViewById(R.id.email);
         editPassword = findViewById(R.id.password);
         loginButton = findViewById(R.id.button_login);
         progressBar = findViewById(R.id.progressBar);
 
 
-
-
         loginButton.setOnClickListener(v -> {
             loginUser();
         });
+
     }
 
+    // ---loginUser method ---
     private void loginUser() {
-        // --- Step 3: Get user input and validate ---
+        // --- Get user input and validate ---
         String email = Objects.requireNonNull(editEmail.getText()).toString();
         String password = Objects.requireNonNull(editPassword.getText()).toString();
 
@@ -75,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // --- Step 4: Start Firebase Login Process ---
+        // ----Start Firebase Login Process ---
         progressBar.setVisibility(View.VISIBLE);
         loginButton.setVisibility(View.GONE);
 
@@ -89,11 +88,17 @@ public class LoginActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
 
                             if (user != null && user.isEmailVerified()) {
+
+                                // Navigate to MainActivity
+
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 finish();
                             } else {
+
+                                // Provide feedback for unverified email
+
                                 Toast.makeText(LoginActivity.this,
                                         "Please verify your email before logging in. Check your inbox.",
                                         Toast.LENGTH_LONG).show();

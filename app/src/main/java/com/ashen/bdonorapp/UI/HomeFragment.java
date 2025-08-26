@@ -2,14 +2,21 @@ package com.ashen.bdonorapp.UI;
 
 import static android.content.ContentValues.TAG;
 
-import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,27 +24,35 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ashen.bdonorapp.Adapters.BloodRequestAdapter;
 import com.ashen.bdonorapp.Models.BloodRequest;
 import com.ashen.bdonorapp.Controller.OnUserDataLoadedListener;
 import com.ashen.bdonorapp.R;
 import com.ashen.bdonorapp.Controller.RequestDataManager;
 import com.ashen.bdonorapp.Controller.UserDataManager;
-import com.ashen.bdonorapp.RequestModule.RequestCardActivity;
-import com.ashen.bdonorapp.RequestModule.RequestDetailsActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements SensorEventListener {
 
-    TextView textView_userName, textView_BloodType;
-    String currentUserName, currentUserBloodType;
+    private TextView textView_userName, textView_BloodType, tempText;
+    private String currentUserName, currentUserBloodType;
+
+    private ShapeableImageView profileImageView;
+
+    private SensorManager sensorManager;
+    private Sensor temperatureSensor;
+    private Boolean isTemperatureSensorAvailable;
+
+
+    private FirestoreRecyclerAdapter<BloodRequest, BloodRequestAdapter.RequestViewHolder> adapter;
     private RecyclerView recyclerView;
     private TextView emptyRequestsTextView;
-    private static FirestoreRecyclerAdapter adapter;
     private FirebaseFirestore db;
-    UserDataManager userDataManager;
+    private UserDataManager userDataManager;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
@@ -67,7 +82,7 @@ public class HomeFragment extends Fragment {
         }
 
         userDataManager = new UserDataManager();
-        fetchAndDisplayUserData();
+       // fetchAndDisplayUserData();
 
 
     }
@@ -81,47 +96,77 @@ public class HomeFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-
-        // Initialize views
-        textView_userName = view.findViewById(R.id.userName);
-        textView_BloodType = view.findViewById(R.id.profile_BloodType);
-        recyclerView = view.findViewById(R.id.recycler_view_requests);
-        emptyRequestsTextView = view.findViewById(R.id.text_view_empty_requests);
-        db = FirebaseFirestore.getInstance();
-//
-
-
-
-        // Fetch and display user data
         fetchAndDisplayUserData();
-        setupRecyclerView();
-
-
         return  view;
 
     }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Initialize views
+        tempText = view.findViewById(R.id.tempText);
+        textView_userName = view.findViewById(R.id.userName);
+        textView_BloodType = view.findViewById(R.id.profile_BloodType);
+        recyclerView = view.findViewById(R.id.recycler_view_requests_home);
+        emptyRequestsTextView = view.findViewById(R.id.text_view_empty_requests);
+        profileImageView = view.findViewById(R.id.profile_image);
+        db = FirebaseFirestore.getInstance();
+
+        tempText = view.findViewById(R.id.tempText);
+        // Initialize sensor manager
+        // Initialize temperature display
+        initializeTemperatureSensors();
+
+        // If no sensor available, use alternative method
+        if (!isTemperatureSensorAvailable) {
+           // fetchWeatherTemperature(); // or setupMockTemperature();
+        }
+
+        setupRecyclerView(); // Call your setup method
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+            fetchAndDisplayUserData();
+        }
+        if (isTemperatureSensorAvailable) {
+            sensorManager.registerListener(this, temperatureSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            Log.d("Home", "Temperature sensor registered in onResume");
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Unregister sensor listener in onPause to match onResume
+        if (isTemperatureSensorAvailable) {
+            sensorManager.unregisterListener(this);
+            Log.d("Home", "Temperature sensor unregistered in onPause");
+        }
+    }
+
     @Override
     public void onStart() {
         super.onStart();
-        adapter.startListening();
-        fetchAndDisplayUserData();// Start listening for data changes
+        if (adapter != null) {
+            adapter.startListening();
+        }
+        fetchAndDisplayUserData();
+        // Remove sensor registration from here
     }
 
     @Override
     public void onStop() {
         super.onStop();
         if (adapter != null) {
-            adapter.stopListening(); // Stop listening for data changes
+            adapter.stopListening();
         }
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        if (adapter != null) {
-            adapter.notifyDataSetChanged(); // Refresh the adapter to show any new data
-           fetchAndDisplayUserData();
-        }
+        // Remove sensor unregistration from here since it's now in onPause
     }
 
 
@@ -130,17 +175,23 @@ public class HomeFragment extends Fragment {
     private void fetchAndDisplayUserData() {
         userDataManager.fetchUserData(new OnUserDataLoadedListener() {
             @Override
-            public void onUserDataLoaded(String userName, String userEmail, String bloodType, String city) {
-                // This method runs when the data is successfully fetched
+            public void onUserDataLoaded(String userName, String userEmail, String bloodType, String city, String profileImageUrl,String gender) {
+
+                if(profileImageUrl != null){
+                    byte[] bytes= Base64.decode(profileImageUrl, Base64.DEFAULT);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    profileImageView.setImageBitmap(bitmap);
+                }
+
 
                 // 1. Store the values in the Activity's global variables
                 currentUserName = userName;
                 currentUserBloodType = bloodType;
 
                 // Now you can use these variables throughout this Activity
-                Log.d(TAG, "User data loaded!");
-                Log.d(TAG, "Name: " + currentUserName);
-                Log.d(TAG, "Blood Type: " + currentUserBloodType);
+                Log.d("HomeFragment", "User data loaded!");
+                Log.d("HomeFragment", "Name: " + currentUserName);
+                Log.d("HomeFragment", "Blood Type: " + currentUserBloodType);
 
                 // 2. Optionally, update UI elements with the data
                 if (textView_userName != null) {
@@ -154,7 +205,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onUserDataLoadFailed(String errorMessage) {
                 // This method runs if there was an error or no user signed in
-                Log.e(TAG, "Failed to load user data: " + errorMessage);
+                Log.e("HomeFragment", "Failed to load user data: " + errorMessage);
 
                 Toast.makeText(getActivity(), "Failed to load user data: " + errorMessage, Toast.LENGTH_SHORT).show();
                 // Handle the error, e.g., show a message to the user, redirect to login
@@ -164,70 +215,85 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void setupRecyclerView() {
+
+private void setupRecyclerView() {
+    RequestDataManager requestManager = new RequestDataManager();
+    Query query = requestManager.getActiveRequestsQuery();
+
+    FirestoreRecyclerOptions<BloodRequest> options = new FirestoreRecyclerOptions.Builder<BloodRequest>()
+            .setQuery(query, BloodRequest.class)
+            .build();
+
+    adapter = new BloodRequestAdapter(options);
+    recyclerView.setHasFixedSize(true);
+    recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+    recyclerView.setAdapter(adapter);
+
+    Log.d("HomeFragment", "Adapter set up");
+}
 
 
-        RequestDataManager requestManager = new RequestDataManager();
-        Query query = requestManager.getActiveRequestsQuery();
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE ||
+                event.sensor.getType() == Sensor.TYPE_TEMPERATURE) {
+            float temperature = event.values[0];
+            tempText.setText(String.format(temperature+" °C"));
+            Log.d("HomeFragment", "Temperature: " + temperature);
+        }
+    }
 
-        FirestoreRecyclerOptions<BloodRequest> options = new FirestoreRecyclerOptions.Builder<BloodRequest>()
-                .setQuery(query, BloodRequest.class)
-                .build();
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
 
-        adapter = new FirestoreRecyclerAdapter<BloodRequest, RequestCardActivity.BloodRequestViewHolder>(options) {
-            @Override
-            protected void onBindViewHolder(RequestCardActivity.BloodRequestViewHolder holder, int position, @NonNull BloodRequest model) {
-                holder.bloodTypeTextView.setText(model.getBloodType());
-                holder.userNameTextView.setText(model.getUserName());
-                holder.userCityTextView.setText(model.getUserCity());
+    private void initializeTemperatureSensors() {
+        sensorManager = (SensorManager) getActivity().getSystemService(getContext().SENSOR_SERVICE);
 
-                // Handle card click
-                holder.itemView.setOnClickListener(v -> {
-                    // When a card is clicked, pass all details to a new activity
-                    Intent intent = new Intent(requireContext(), RequestDetailsActivity.class);
-                    intent.putExtra("bloodType", model.getBloodType());
-                    intent.putExtra("userName", model.getUserName());
-                    intent.putExtra("userCity", model.getUserCity());
-                    intent.putExtra("description", model.getDescription());
-                    intent.putExtra("urgentType", model.getUrgentType());
-                    intent.putExtra("requestId", getSnapshots().getSnapshot(position).getId()); // Get Firestore document ID
-                    startActivity(intent);
-                });
+        // Try ambient temperature first
+        temperatureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+
+        if (temperatureSensor != null) {
+            isTemperatureSensorAvailable = true;
+            Log.d("HomeFragment", "Ambient temperature sensor found: " + temperatureSensor.getName());
+        } else {
+            // Try device temperature as fallback
+            temperatureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_TEMPERATURE);
+            if (temperatureSensor != null) {
+                isTemperatureSensorAvailable = true;
+                Log.d("HomeFragment", "Device temperature sensor found: " + temperatureSensor.getName());
+            } else {
+                isTemperatureSensorAvailable = false;
+                tempText.setText("No temp sensor");
+                Log.d("HomeFragment", "No temperature sensor available");
             }
+        }
+    }
 
-            @NonNull
-            @Override
-            public RequestCardActivity.BloodRequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_blood_request_card, parent, false);
-                return new RequestCardActivity.BloodRequestViewHolder(view);
-            }
+//    private void fetchWeatherTemperature() {
+//        // Example using a weather API
+//        // You'll need to implement actual API call
+//        new Thread(() -> {
+//            try {
+//                // Simulate API call
+//                double temperature = getCurrentTemperatureFromAPI();
+//
+//                getActivity().runOnUiThread(() -> {
+//                    tempText.setText(String.format("%.1f°C", temperature));
+//                });
+//            } catch (Exception e) {
+//                Log.e("Home", "Failed to fetch temperature", e);
+//                getActivity().runOnUiThread(() -> {
+//                    tempText.setText("--°C");
+//                });
+//            }
+//        }).start();
+//    }
 
-            @Override
-            public void onDataChanged() {
-                // Called when there is a new query snapshot (data changes)
-                if (getItemCount() == 0) {
-                    emptyRequestsTextView.setVisibility(View.VISIBLE);
-                    recyclerView.setVisibility(View.GONE);
-                } else {
-                    emptyRequestsTextView.setVisibility(View.GONE);
-                    recyclerView.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public int getItemCount() {
-                // This method is primarily for internal use by the adapter.
-                // The onDataChanged() method handles visibility based on actual data.
-                return super.getItemCount();
-            }
-
-
-        };
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        recyclerView.setAdapter(adapter);
-
+    private double getCurrentTemperatureFromAPI() {
+        // Implement actual weather API call here
+        // For now, return a dummy value
+        return 25.3; // Replace with actual API call
     }
 }

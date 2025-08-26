@@ -15,7 +15,9 @@ import java.util.Date;
         private String bloodType;
         private String description;
         private String urgentType; // e.g., "Urgent", "Normal"
-        private String status; // Unique identifier for the request
+        private String status;// Unique identifier for the request
+
+        private Date acceptedAt;
 
 
         @ServerTimestamp // Automatically sets the timestamp when created
@@ -43,6 +45,7 @@ import java.util.Date;
             this.title = title;
             this.status = null;
             this.acceptedByUserId = null;
+            this.acceptedAt = null;
 
         }
 
@@ -77,7 +80,6 @@ import java.util.Date;
             this.timestamp = timestamp;
         }
         public void setUrgentType(String urgentType) { this.urgentType = urgentType; }
-
         public String getPostedByUserId() { return postedByUserId; }
         public void setPostedByUserId(String postedByUserId) { this.postedByUserId = postedByUserId; }
 

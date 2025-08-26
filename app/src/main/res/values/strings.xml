@@ -11,6 +11,12 @@
         <item>O+</item>
         <item>O-</item>
     </string-array>
+
+    <string-array name="gender">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+
     <string-array name="urgent_types">
         <item>Normal</item>
         <item>Urgent</item>

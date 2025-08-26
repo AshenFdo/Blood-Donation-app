@@ -4,7 +4,7 @@
     <solid android:color="@color/primary_red"/>
 
     <size
-        android:width="50dp"
-        android:height="50dp"/>
+        android:width="60dp"
+        android:height="60dp"/>
     <!-- A shade of red -->
 </shape>

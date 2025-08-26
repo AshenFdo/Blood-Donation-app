@@ -4,56 +4,83 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
+    android:animateLayoutChanges="true"
     android:layout_height="match_parent"
     tools:context=".UI.EditUserProfile">
 
-    <TextView
-        android:id="@+id/textView"
+
+    <LinearLayout
+        android:id="@+id/linearLayout6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="72dp"
-        android:fontFamily="@font/lato_bold"
-        android:text="Edit User Profile"
-        android:textAlignment="center"
-        android:textColor="@color/primary_red"
-        android:textSize="24sp" />
+        android:layout_marginTop="40dp"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:contentDescription="backArrow"
+            android:padding="16dp"
+            android:onClick="onBackPressed"
+            android:src="@drawable/arrow_left_icon"
+            app:tint="@color/primary_red" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="50dp"
+            android:fontFamily="@font/lato_bold"
+            android:gravity="center"
+            android:text="Edit User Profile"
+            android:textAlignment="center"
+            android:textColor="@color/primary_red"
+            android:textSize="24sp" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView"
-        android:layout_marginTop="55dp"
+        android:layout_below="@+id/linearLayout6"
+        android:layout_marginTop="40dp"
         android:background="@drawable/rounded_top_background"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:id="@+id/backButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:onClick="onBackPressed"
-            android:orientation="horizontal">
+            android:layout_margin="10dp"
+            android:layout_marginBottom="40dp"
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:contentDescription="backArrow"
-                android:padding="16dp"
-                android:src="@drawable/arrow_left_icon"
-                app:tint="@color/primary_red" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/profile_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:padding="2dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/profile_image"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Circle"
+                app:strokeWidth="2dp" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
                 android:fontFamily="@font/lato_bold"
-                android:padding="16dp"
-                android:text="Back to profile"
+                android:text="Change Profile Image"
+                android:textAlignment="center"
                 android:textColor="@color/primary_red"
                 android:textSize="16sp" />
+
 
         </LinearLayout>
 
@@ -89,6 +116,7 @@
                 android:layout_marginTop="0dp"
                 android:hint="Blood Type"
                 app:boxBackgroundMode="none">
+
                 <androidx.appcompat.widget.AppCompatSpinner
 
                     android:id="@+id/spinner_blood_type"
@@ -97,11 +125,29 @@
                     android:layout_marginVertical="10dp"
                     android:background="@drawable/edittext_background"
                     android:entries="@array/blood_types"
-                    android:padding="15dp"
-                    />
+                    android:padding="15dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:hint="Sex"
+                app:boxBackgroundMode="none">
+
+                <androidx.appcompat.widget.AppCompatSpinner
+
+                    android:id="@+id/spinner_gender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp"
+                    android:background="@drawable/edittext_background"
+                    android:entries="@array/gender"
+                    android:padding="15dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
 
             <com.google.android.material.textfield.TextInputLayout
@@ -149,7 +195,7 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="24dp"
             android:padding="12dp"
-            android:text="Register"
+            android:text="Update Profile"
             android:textSize="16sp" />
 
         <ProgressBar
@@ -160,12 +206,13 @@
             android:layout_gravity="center"
             android:indeterminateTint="@color/primary_red"
             android:visibility="gone" />
-
         <View
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
 
     </LinearLayout>
+
 
 
 </RelativeLayout>

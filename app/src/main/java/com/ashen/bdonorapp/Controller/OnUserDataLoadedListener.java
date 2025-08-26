@@ -10,7 +10,8 @@ public interface OnUserDataLoadedListener {
      * @param bloodType The user's blood type from Firestore. Can be null if not set.
      * @param city The user's blood type from Firestore. Can be null if not set.
      */
-    void onUserDataLoaded(String userName, String userEmail, String bloodType, String city);
+    void onUserDataLoaded(String userName, String userEmail, String bloodType, String city, String profileImageUrl,String gender);
+
 
     /**
      * Called when there is an error loading user data, or if no user is signed in.

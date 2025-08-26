@@ -12,9 +12,9 @@
         android:title="Requests"/>
 
     <item
-        android:id="@+id/chat_page"
-        android:icon="@drawable/comment_icon"
-        android:title="Chat"/>
+        android:id="@+id/map_page"
+        android:icon="@drawable/location_icon"
+        android:title="Map"/>
     <item
         android:id="@+id/profile_page"
         android:icon="@drawable/user_icon"

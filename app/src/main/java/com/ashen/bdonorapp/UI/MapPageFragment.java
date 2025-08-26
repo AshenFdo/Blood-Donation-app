@@ -42,7 +42,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class MessagePageFragment extends Fragment implements OnMapReadyCallback {
+public class MapPageFragment extends Fragment implements OnMapReadyCallback {
 
     private static final String TAG = "MessagePageFragment";
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;

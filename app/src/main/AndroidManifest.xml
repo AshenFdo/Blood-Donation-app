@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
-
     <!-- Add these permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -18,8 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BDonorApp"
         tools:targetApi="31">
-
-
+        <activity
+            android:name=".TextActivity"
+            android:exported="false" />
         <activity
             android:name=".UI.MapsActivity"
             android:exported="false" />
@@ -27,22 +27,10 @@
             android:name=".UI.EditUserProfile"
             android:exported="false" />
         <activity
-            android:name=".RequestModule.RunActivity"
-            android:exported="false" />
-        <activity
             android:name=".RequestModule.RequestDetailsActivity"
             android:exported="false" />
         <activity
-            android:name=".RequestModule.RequestCardActivity"
-            android:exported="false" />
-        <activity
             android:name=".RequestModule.AddBloodRequestActivity"
-            android:exported="false" />
-        <activity
-            android:name=".TestActivity02"
-            android:exported="false" />
-        <activity
-            android:name=".TextActivity"
             android:exported="false" />
         <activity
             android:name=".authenticationModule.RegisterActivity"
@@ -54,7 +42,7 @@
             android:name=".MainActivity"
             android:exported="true" />
         <activity
-            android:name=".SplachScreen"
+            android:name=".SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

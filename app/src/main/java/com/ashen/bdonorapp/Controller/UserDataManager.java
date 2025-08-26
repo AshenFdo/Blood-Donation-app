@@ -1,5 +1,7 @@
 package com.ashen.bdonorapp.Controller;
 
+import android.graphics.Bitmap;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,7 +16,10 @@ import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.Source;
+
+import java.io.ByteArrayOutputStream;
 
 public class UserDataManager {
 
@@ -26,12 +31,6 @@ public class UserDataManager {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
     }
-
-    /**
-     * Fetches the current user's data including Auth profile and Firestore details.
-     *
-     * @param listener The listener to be notified when data is loaded or fails.
-     */
 
 
     public void fetchUserData(OnUserDataLoadedListener listener) {
@@ -50,8 +49,6 @@ public class UserDataManager {
         Source source = Source.DEFAULT;// Use CACHE to get data from local cache if available, otherwise use SERVER
 
 
-
-
         // Now fetch custom data  from Firestore using the UID
         db.collection("users")
                 .document(userUid)
@@ -60,8 +57,11 @@ public class UserDataManager {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         String bloodType = null;
-                        String userName= null;
+                        String userName = null;
                         String city = null;
+                        String userProfileUrl = null;
+                        String gender = null;
+
 
                         if (documentSnapshot.exists()) {
                             // Document exists, try to get the blood type field
@@ -69,17 +69,30 @@ public class UserDataManager {
                             if (bloodType == null) {
                                 bloodType = "Not specified"; // Default value if not set
                             }
+                            // Get other fields
+                            userProfileUrl = documentSnapshot.getString("profileImage");
+                            if (userProfileUrl == null) {
+                                userProfileUrl = ""; // Default value if not set
+                            }
 
                             city = documentSnapshot.getString("city");
                             if (city == null) {
                                 city = "Not specified"; // Default value if not set
                             }
+
+                            gender = documentSnapshot.getString("gender");
+                            if (gender == null){
+                                gender = "Not specified";
+                            }
                             Log.d(TAG, "User document exists in Firestore for UID: " + userUid);
                             Log.d(TAG, "City from Firestore: " + city);
                             Log.d(TAG, "Blood Type from Firestore: " + bloodType);
+                            Log.d(TAG, "Profile Image URL from Firestore: " + userProfileUrl);
+                            Log.d(TAG,"Gender from" + gender);
 
 
-                            String nameFromFirestore = documentSnapshot.getString("name");
+
+                            String nameFromFirestore = documentSnapshot.getString("userName");
                             if (nameFromFirestore != null) {
                                 userName = nameFromFirestore;
                             }
@@ -87,13 +100,12 @@ public class UserDataManager {
 
                         } else {
                             Log.d(TAG, "User document does not exist in Firestore for UID: " + userUid);
-                            // The document might not exist if the user hasn't completed profile setup
                         }
 
                         // Data fetched (or not found), now call the success listener
-                        listener.onUserDataLoaded(userName, userEmail, bloodType, city);
+                        listener.onUserDataLoaded(userName, userEmail, bloodType, city, userProfileUrl,gender);
 
-                }
+                    }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -106,18 +118,17 @@ public class UserDataManager {
 
     }
 
-    public void updateUserProfile(String name , String email, String bloodType,String city,  OnUserDataLoadedListener listener) {
+    public void updateUserProfile(String name, String email, String bloodType, String city, String userProfileUrl,String gender, OnUserDataUpdateListener listener) {
         FirebaseUser user = mAuth.getCurrentUser();
-        FirebaseUser eUser = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user == null) {
-            listener.onUserDataLoadFailed("No user is currently signed in.");
+            listener.onFailure("No user is currently signed in.");
             return;
         }
 
-            // User is signed in, get their UID
-            String userUid = user.getUid();
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
+        // User is signed in, get their UID
+        String userUid = user.getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         // Counter to track completed operations
         final int[] completedOperations = {0};
@@ -129,9 +140,11 @@ public class UserDataManager {
         if (email != null && !email.isEmpty()) totalOperations[0] += 2; // Auth + Firestore
         if (city != null && !city.isEmpty()) totalOperations[0]++;
         if (bloodType != null && !bloodType.isEmpty()) totalOperations[0]++;
+        if (userProfileUrl != null && !userProfileUrl.isEmpty()) totalOperations[0]++;
+        if(gender != null && !gender.isEmpty()) totalOperations[0]++;
 
         if (totalOperations[0] == 0) {
-            listener.onUserDataLoadFailed("No valid data to update");
+            listener.onFailure("No valid data to update");
             return;
         }
 
@@ -140,10 +153,25 @@ public class UserDataManager {
             completedOperations[0]++;
             if (completedOperations[0] >= totalOperations[0]) {
                 if (!hasError[0]) {
-                    listener.onUserDataLoaded(name, email, bloodType, city);
+                    listener.onSuccess("User profile updated successfully");
                 }
             }
         };
+
+
+        // Helper method to handle operation completion
+        Runnable handleOperationComplete = () -> {
+            synchronized (completedOperations) {
+                completedOperations[0]++;
+                Log.d(TAG, "Operation completed: " + completedOperations[0] + "/" + totalOperations[0]);
+
+                if (completedOperations[0] >= totalOperations[0] && !hasError[0]) {
+                    Log.d(TAG, "All operations completed successfully");
+                    listener.onSuccess("User profile updated successfully");
+                }
+            }
+        };
+
 
         user.updateEmail(email)
                 .addOnCompleteListener(task -> {
@@ -160,7 +188,7 @@ public class UserDataManager {
                                     Log.w(TAG, "Error updating email in Firestore", e);
                                     if (!hasError[0]) {
                                         hasError[0] = true;
-                                        listener.onUserDataLoadFailed("Failed to update email in database: " + e.getMessage());
+                                        listener.onFailure("Failed to update email in database: " + e.getMessage());
                                     }
                                 });
                     } else {
@@ -176,7 +204,7 @@ public class UserDataManager {
 
                         if (!hasError[0]) {
                             hasError[0] = true;
-                            listener.onUserDataLoadFailed(errorMessage);
+                            listener.onFailure(errorMessage);
                         }
                     }
                 });
@@ -184,7 +212,7 @@ public class UserDataManager {
         // Update name
         if (name != null && !name.isEmpty()) {
             db.collection("users").document(userUid)
-                    .update("name", name)
+                    .update("userName", name)
                     .addOnSuccessListener(aVoid -> {
                         Log.d(TAG, "User name updated successfully.");
                         checkCompletion.run();
@@ -193,7 +221,7 @@ public class UserDataManager {
                         Log.w(TAG, "Error updating user name", e);
                         if (!hasError[0]) {
                             hasError[0] = true;
-                            listener.onUserDataLoadFailed("Failed to update name: " + e.getMessage());
+                            listener.onFailure("Failed to update name: " + e.getMessage());
                         }
                     });
         }
@@ -210,7 +238,7 @@ public class UserDataManager {
                         Log.w(TAG, "Error updating city", e);
                         if (!hasError[0]) {
                             hasError[0] = true;
-                            listener.onUserDataLoadFailed("Failed to update city: " + e.getMessage());
+                            listener.onFailure("Failed to update city: " + e.getMessage());
                         }
                     });
         }
@@ -227,34 +255,70 @@ public class UserDataManager {
                         Log.w(TAG, "Error updating blood type", e);
                         if (!hasError[0]) {
                             hasError[0] = true;
-                            listener.onUserDataLoadFailed("Failed to update blood type: " + e.getMessage());
+                            listener.onFailure("Failed to update blood type: " + e.getMessage());
                         }
                     });
         }
 
-
-
-
-
-
+        // Update profile image URL
+        if (userProfileUrl != null && !userProfileUrl.isEmpty()) {
+            db.collection("users").document(userUid)
+                    .update("profileImage", userProfileUrl)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d(TAG, "Profile image URL updated successfully.");
+                        checkCompletion.run();
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w(TAG, "Error updating profile image URL", e);
+                        if (!hasError[0]) {
+                            hasError[0] = true;
+                            listener.onFailure("Failed to update profile image URL: " + e.getMessage());
+                        }
+                    });
         }
 
-
-
-
-
-    //Get current Blood type
-    public String getCurrentUserName() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            String userUid = user.getUid();
-            DocumentSnapshot documentSnapshot = db.collection("users").document(userUid).get().getResult();
-            if (documentSnapshot != null && documentSnapshot.exists()) {
-                return documentSnapshot.getString("Name");
-            }
+        //Update Gender
+        if(gender != null && !gender.isEmpty()){
+            db.collection("users").document(userUid)
+                    .update("gender",gender)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d(TAG, "Gender updated successfully.");
+                    })
+                    .addOnFailureListener(e->{
+                        Log.w(TAG, "Error updating Gender", e);
+                        if (!hasError[0]) {
+                            hasError[0] = true;
+                            listener.onFailure("Failed to update gender: " + e.getMessage());
+                        }
+                    });
         }
-        return null; // Return null if no user or blood type not found
     }
 
+
+        //Get current Blood type
+        public String getCurrentUserName () {
+            FirebaseUser user = mAuth.getCurrentUser();
+            if (user != null) {
+                String userUid = user.getUid();
+                DocumentSnapshot documentSnapshot = db.collection("users").document(userUid).get().getResult();
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    return documentSnapshot.getString("Name");
+                }
+            }
+            return null; // Return null if no user or blood type not found
+        }
+
+
+
+    public Query getAllUsersExceptCurrent() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null) {
+            Log.e("UserDataManager", "No user is currently signed in");
+            return null;
+        }
+
+        return db.collection("users").whereNotEqualTo("userId", user.getUid());
+    }
 }
+
 

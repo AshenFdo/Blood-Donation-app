@@ -20,9 +20,6 @@ import com.ashen.bdonorapp.Models.BloodRequest;
 import com.ashen.bdonorapp.R;
 import com.ashen.bdonorapp.Controller.RequestDataManager;
 import com.ashen.bdonorapp.RequestModule.AddBloodRequestActivity;
-import com.ashen.bdonorapp.RequestModule.RequestCardActivity;
-import com.ashen.bdonorapp.RequestModule.RequestDetailsActivity;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -37,14 +34,6 @@ public class RequestPageFragment extends Fragment {
 
     private LinearLayout addNewRequest;
     private LinearLayout mapFeature;
-
-
-
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
 
 

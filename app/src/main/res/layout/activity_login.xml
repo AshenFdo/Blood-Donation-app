@@ -43,7 +43,7 @@
             app:layout_constraintHorizontal_bias="0.378"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.505"
+            app:layout_constraintVertical_bias="0.244"
             app:srcCompat="@drawable/oval_shape" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -203,6 +203,8 @@
                 android:text="Don't have an account? Register"
                 android:layout_marginTop="20dp"
                 android:textAlignment="center"
+                android:textSize="18sp"
+
                 android:onClick="buttonRegisterClick"
                 />
 

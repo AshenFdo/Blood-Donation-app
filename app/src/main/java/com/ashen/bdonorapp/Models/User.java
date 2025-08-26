@@ -1,60 +1,106 @@
 package com.ashen.bdonorapp.Models;
 
-import com.google.firebase.firestore.ServerTimestamp;
+import com.google.firebase.Timestamp;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 
 public class User {
     private String email;
     private String userName;
+
+    private String gender;
     private String password;
     private String bloodType;
-    private String uid; // The user's unique ID from Firebase Authentication
+    private String userId; // The user's unique ID from Firebase Authentication
     private String city;
-    private String profileImageUrl;
-
-    private Date lastDonationDate;
-
-    private LinkedList<User> friendsList = new LinkedList<>();
+    private String profileImage;
 
 
-    public User(String email, String userName, String bloodType,String uID) {
+    private final ArrayList<String> friendsList = new ArrayList<>();
+
+
+    public User(String email, String name, String bloodType,String uID, String profileImageUrl, String gender) {
         this.email = email;
-        this.userName = userName;
+        this.userName = name;
         this.bloodType = bloodType;
-        this.uid = uID;
+        this.userId = uID;
+        this.profileImage = profileImageUrl;
+        this.gender = gender;
     }
 
     // Default constructor for Firestore
     public User(){}
 
     // Getters and Setters for all fields...
-    public String getUid() { return uid; }
-    public void setUid(String uid) { this.uid = uid; }
-    public String getName() { return userName; }
-    public void setName(String name) { this.userName = name; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getCity() { return city; }
-    public void setCity(String city) { this.city = city; }
-    public String getBloodType() { return bloodType; }
-    public void setBloodType(String bloodType) { this.bloodType = bloodType; }
-    public String getProfileImageUrl() { return profileImageUrl; }
-    public void setProfileImageUrl(String profileImageUrl) { this.profileImageUrl = profileImageUrl; }
-    public Date getLastDonationDate() { return lastDonationDate; }
-    public void setLastDonationDate(Date lastDonationDate) { this.lastDonationDate = lastDonationDate; }
 
-    public LinkedList<User> setAddFriend(User friend) {
-        if (friend != null && !friendsList.contains(friend)) {
-            friendsList.add(friend);
-        }
-        return friendsList;
-    }
-    public LinkedList<User> getFriendsList() {
-        return friendsList;
+
+    public String getEmail() {
+        return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
+    public String getUserName() {
+        return userName;
+    }
 
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getBloodType() {
+        return bloodType;
+    }
+
+    public void setBloodType(String bloodType) {
+        this.bloodType = bloodType;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getCity() {
+        return city != null ? city : "Not specified";
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public ArrayList<String> getFriendsList() {
+        return friendsList;
+    }
 }

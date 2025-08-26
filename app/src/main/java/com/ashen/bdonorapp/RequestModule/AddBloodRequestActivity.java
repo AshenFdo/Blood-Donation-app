@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -94,7 +93,7 @@ public class AddBloodRequestActivity extends AppCompatActivity {
         db.collection("users").document(postedByUserId).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult().exists()) {
-                        String userName = task.getResult().getString("name");
+                        String userName = task.getResult().getString("userName");
                         String userCity = task.getResult().getString("city");
 
                         if (userName != null && userCity != null) {

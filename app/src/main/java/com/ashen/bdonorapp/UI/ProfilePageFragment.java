@@ -3,10 +3,13 @@ package com.ashen.bdonorapp.UI;
 import static android.content.ContentValues.TAG;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +23,7 @@ import com.ashen.bdonorapp.R;
 import com.ashen.bdonorapp.Controller.UserDataManager;
 import com.ashen.bdonorapp.authenticationModule.LoginActivity;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 
 
@@ -30,6 +34,8 @@ public class ProfilePageFragment extends Fragment {
     private TextView textView_userName;
     private TextView textView_city;
     private TextView texView_bloodType;
+
+    ShapeableImageView profileImageView;
 
     MaterialButton btn_logOut;
 
@@ -97,6 +103,7 @@ public class ProfilePageFragment extends Fragment {
             texView_bloodType = view.findViewById(R.id.profile_BloodType);
             editProfileButton = view.findViewById(R.id.editProfileButton);
             btn_logOut = view.findViewById(R.id.btn_logOut);
+            profileImageView = view.findViewById(R.id.profile_image);
 
             editProfileButton.setOnClickListener(v -> {
                 Intent intent = new Intent(getActivity(), EditUserProfile.class);
@@ -140,13 +147,20 @@ public class ProfilePageFragment extends Fragment {
     private void fetchAndDisplayUserData() {
         userDataManager.fetchUserData(new OnUserDataLoadedListener() {
             @Override
-            public void onUserDataLoaded(String userName, String userEmail, String bloodType, String city) {
+            public void onUserDataLoaded(String userName, String userEmail, String bloodType, String city,String profileImageUrl,String gender) {
                 // This method runs when the data is successfully fetched
 
                 // 1. Store the values in the Activity's global variables
                 currentUserName = userName;
                 currentUserCity = city;
                 currentUserBloodType = bloodType;
+
+                if(profileImageUrl != null){
+                    byte[] bytes= Base64.decode(profileImageUrl, Base64.DEFAULT);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    profileImageView.setImageBitmap(bitmap);
+                }
+
 
                 // Now you can use these variables throughout this Activity
                 Log.d(TAG, "User data loaded!");

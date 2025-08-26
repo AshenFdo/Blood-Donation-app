@@ -44,7 +44,6 @@ public class BloodRequestAdapter extends FirestoreRecyclerAdapter<BloodRequest, 
 
     public static class RequestViewHolder extends RecyclerView.ViewHolder {
         TextView bloodTypeTextView, userNameTextView, userCityTextView, urgentTypeTextView;
-
         public RequestViewHolder(@NonNull View itemView) {
             super(itemView);
             bloodTypeTextView = itemView.findViewById(R.id.text_view_card_blood_type);
