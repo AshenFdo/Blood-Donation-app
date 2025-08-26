@@ -33,8 +33,8 @@
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/profile_image"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
                     android:padding="2dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/profile_image"
@@ -82,14 +82,14 @@
                     android:gravity="center"
                     android:textAlignment="center"
                     android:textColor="@color/black"
-                    android:fontFamily="@font/lato_bold"
-                    android:textSize="18sp" />
+                    android:fontFamily="@font/lato"
+                    android:textSize="14sp" />
 
 
                 <TextView
                     android:id="@+id/profile_BloodType"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:background="@drawable/blood_type_background"
                     android:gravity="center"
                     android:textAlignment="center"
@@ -208,20 +208,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="260dp"
+        android:layout_marginTop="240dp"
         android:background="@drawable/rounded_top_background"
         android:orientation="vertical"
         android:paddingHorizontal="10dp"
         android:paddingVertical="20dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:fontFamily="@font/lato_bold"
-            android:text="Most resent requests"
-            android:textColor="@color/primary_red"
-            android:textSize="18sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_requests_home"

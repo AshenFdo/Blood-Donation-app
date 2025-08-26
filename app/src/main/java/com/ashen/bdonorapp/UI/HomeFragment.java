@@ -2,6 +2,7 @@ package com.ashen.bdonorapp.UI;
 
 import static android.content.ContentValues.TAG;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
@@ -127,12 +128,12 @@ public class HomeFragment extends Fragment implements SensorEventListener {
 
         setupRecyclerView(); // Call your setup method
     }
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onResume() {
         super.onResume();
         if (adapter != null) {
             adapter.notifyDataSetChanged();
-            fetchAndDisplayUserData();
         }
         if (isTemperatureSensorAvailable) {
             sensorManager.registerListener(this, temperatureSensor, SensorManager.SENSOR_DELAY_NORMAL);
@@ -166,7 +167,6 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         if (adapter != null) {
             adapter.stopListening();
         }
-        // Remove sensor unregistration from here since it's now in onPause
     }
 
 
@@ -222,6 +222,7 @@ private void setupRecyclerView() {
 
     FirestoreRecyclerOptions<BloodRequest> options = new FirestoreRecyclerOptions.Builder<BloodRequest>()
             .setQuery(query, BloodRequest.class)
+            .setLifecycleOwner(this)
             .build();
 
     adapter = new BloodRequestAdapter(options);

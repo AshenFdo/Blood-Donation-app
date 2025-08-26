@@ -9,7 +9,7 @@
     android:padding="12dp"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    tools:context=".RequestModule.RequestDetailsActivity">
+    tools:context=".RequestModule.OwnerReqDetailsActivity">
 
     <TextView
         android:id="@+id/textView2"
@@ -109,6 +109,7 @@
             android:orientation="vertical"
             android:layout_gravity="center"
             android:layout_marginVertical="20dp"
+            android:layout_marginHorizontal="20dp"
             >
             <TextView
 
@@ -117,9 +118,9 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/lato_black"
                 android:textColor="@color/primary_red"
-                android:maxLength="10"
+
                 android:text="Tittle"
-                android:layout_gravity="center"
+                android:layout_gravity="start"
                 android:textSize="22sp"/>
         </LinearLayout>
 
@@ -132,7 +133,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:padding="10dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="10dp"
             >
 
             <TextView
@@ -142,58 +143,107 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/lato"
                 android:textAlignment="center"
-                android:maxLength="20"
                 android:layout_marginLeft="10dp"
                 android:textSize="18sp" />
+
+
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:layout_marginVertical="20dp"
+            android:layout_marginHorizontal="20dp"
+            >
+            <TextView
+                android:id="@+id/Accept_status"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Enter Your Name"
-                android:layout_marginTop="5dp"
-                app:boxBackgroundMode="none"
-                >
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/accepted_user_name_textView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_primary"
-                    android:background="@drawable/edittext_background"/>
-            </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter Your Contact Number"
-                android:layout_marginTop="5dp"
-                >
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/contact_number"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="phone"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_primary"
-                    android:background="@drawable/edittext_background"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                android:fontFamily="@font/lato_black"
+                android:textColor="@color/primary_red"
+                android:text="Not"
+                android:layout_gravity="center"
+                android:textSize="22sp"/>
         </LinearLayout>
 
+
+
+
+
+
+        <LinearLayout
+            android:id="@+id/accepted_user_details_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/lato_bold"
+                    android:text="Accepted By: "
+                    android:textColor="@color/black"
+                    android:textSize="18sp"/>
+                <TextView
+                    android:id="@+id/request_accepted_by"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/lato_bold"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="18sp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginBottom="8dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/lato_bold"
+                    android:text="Contact Number: "
+                    android:textColor="@color/black"
+                    android:textSize="18sp"/>
+                <TextView
+                    android:id="@+id/accepted_user_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/lato_bold"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="18sp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
+
+
+
+
+
         <Button
-            android:id="@+id/button_accept_request"
+            android:id="@+id/button_delete_request"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:gravity="center"
             android:layout_gravity="center"
-            android:text="Accept Request" />
+            android:text="Delete Request" />
     </LinearLayout>
 
 </RelativeLayout>
