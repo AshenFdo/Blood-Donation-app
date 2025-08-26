@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:background="@drawable/edittext_background"
-            android:maxLength="20"
+            android:maxLength="30"
             android:entries="@array/blood_types"
             android:padding="10dp" />
 
@@ -85,6 +85,7 @@
             android:hint="e.g., Need B+ blood for a patient"
             android:inputType="textMultiLine"
             android:minLines="3"
+            android:maxLength="100"
             android:padding="20dp" />
 
         <LinearLayout

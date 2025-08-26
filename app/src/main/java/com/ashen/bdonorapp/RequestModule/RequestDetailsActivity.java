@@ -62,14 +62,16 @@ public class RequestDetailsActivity extends AppCompatActivity {
             String acceptedUserName = Objects.requireNonNull(acceptedByEditText.getText()).toString().trim();
             String acceptedUserContact = Objects.requireNonNull(acceptedContactNumber.getText()).toString().trim();
 
+
             // Validate input
             if (acceptedUserName.isEmpty()) {
                 acceptedByEditText.setError("Please enter your name");
                 return;
             }
 
-            if (acceptedUserContact.isEmpty()) {
-                acceptedContactNumber.setError("Please enter your contact number");
+            if (acceptedUserContact.isEmpty() || acceptedUserContact.length() < 10) {
+                acceptedContactNumber.setError("Please enter your contact number correctly");
+                return;
 
             }
 

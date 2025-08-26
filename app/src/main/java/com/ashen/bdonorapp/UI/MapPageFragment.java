@@ -106,8 +106,14 @@ public class MapPageFragment extends Fragment implements OnMapReadyCallback {
         btnNavigate.setOnClickListener(v -> navigateToSelectedLocation());
     }
 
+
+    /**
+     * Sets up event listeners for the search functionality.
+     * Handles both search button clicks and Enter key presses in the search field.
+     */
     private void setupSearchFunctionality() {
-        // Handle search button click
+
+        // Handle search button click event (search location method called)
         btnSearch.setOnClickListener(v -> searchLocation());
 
         // Handle Enter key press in search field
@@ -123,6 +129,11 @@ public class MapPageFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
+    /**
+     * Performs location search based on user input.
+     * Uses Geocoder to convert address text to coordinates, places a marker on the map,
+     * and shows the navigate button if location is found.
+     */
     private void searchLocation() {
         String searchQuery = inputSearch.getText().toString().trim();
         if (searchQuery.isEmpty()) {
@@ -131,19 +142,26 @@ public class MapPageFragment extends Fragment implements OnMapReadyCallback {
         }
 
         try {
+            /**
+             *@param addressList used to handle duplicate locations
+            * @param searchQuery The location name or address to search for
+            * */
             List<Address> addressList = geocoder.getFromLocationName(searchQuery, 1);
             if (addressList != null && !addressList.isEmpty()) {
                 Address address = addressList.get(0);
-                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
 
+                // Get latitude and longitude from the address
+                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
                 selectedLocation = latLng;
+
+                // Get the full address line
                 selectedAddress = address.getAddressLine(0);
 
+                // Clear existing markers and add a new marker for the searched location
                 map.clear();
-                map.addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .title(address.getAddressLine(0)));
+                map.addMarker(new MarkerOptions().position(latLng).title(address.getAddressLine(0)));
 
+                // Move and zoom the camera to the searched location
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
                 btnNavigate.setVisibility(View.VISIBLE);
 
@@ -157,16 +175,26 @@ public class MapPageFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+
+    /**
+     * Launches Google Maps navigation to the selected location.
+     * Creates an intent to open Google Maps with turn-by-turn navigation.
+     * Shows error message if Google Maps app is not installed.
+     */
+
     private void navigateToSelectedLocation() {
         if (selectedLocation == null) {
             Toast.makeText(requireContext(), "No destination selected", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Create a Uri from the selected location for navigation
         Uri gmmIntentUri = Uri.parse("google.navigation:q=" + selectedLocation.latitude + "," + selectedLocation.longitude + "&mode=d");
+        // Create an Intent to launch Google Maps
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
 
+        // Check if Google Maps app is installed and can handle the intent
         if (mapIntent.resolveActivity(requireActivity().getPackageManager()) != null) {
             startActivity(mapIntent);
         } else {
@@ -174,14 +202,25 @@ public class MapPageFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+
+    /**
+     * Callback method called when the Google Map is ready for use.
+     * Sets up map listeners, location permissions, and initializes the current location display.
+     * @param googleMap The GoogleMap instance ready for configuration
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.map = googleMap;
 
+        // Prompt for location permission
         getLocationPermission();
+        //Update the map's UI settings based on permission
         updateLocationUI();
+
+        //Get Device Location and set the map's camera
         getDeviceLocation();
 
+        // Handle map clicks to select locations
         map.setOnMapClickListener(latLng -> {
             try {
                 List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
@@ -204,6 +243,7 @@ public class MapPageFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
+        // Handle marker clicks to select existing markers
         map.setOnMarkerClickListener(marker -> {
             selectedLocation = marker.getPosition();
             selectedAddress = marker.getTitle();
@@ -212,18 +252,27 @@ public class MapPageFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
+    /**
+     * Checks and requests location permission from the user.
+     * Updates the locationPermissionGranted flag based on current permission status.
+     */
     private void getLocationPermission() {
-        if (ContextCompat.checkSelfPermission(requireContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = true;
         } else {
-            ActivityCompat.requestPermissions(requireActivity(),
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
     }
 
+
+    /**
+     * Handles the result of location permission request.
+     * Updates the locationPermissionGranted flag and refreshes the location UI.
+     * @param requestCode The request code passed in requestPermissions
+     * @param permissions The requested permissions
+     * @param grantResults The grant results for the corresponding permissions
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         locationPermissionGranted = false;
@@ -235,6 +284,11 @@ public class MapPageFragment extends Fragment implements OnMapReadyCallback {
         updateLocationUI();
     }
 
+
+    /**
+     * Updates the map's location-related UI components based on permission status.
+     * Enables or disables the "My Location" button and location display on the map.
+     */
     private void updateLocationUI() {
         if (map == null) {
             return;
@@ -254,26 +308,32 @@ public class MapPageFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    /**
+     * Retrieves the device's last known location and centers the map on it.
+     * If location permission is granted, gets the current location and moves the map camera.
+     * Falls back to default location if current location is unavailable.
+     */
     private void getDeviceLocation() {
         try {
             if (locationPermissionGranted) {
+
+                // Get the last known location from the FusedLocationProviderClient
                 Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
+
+                // Add a listener to handle the result of the location request
                 locationResult.addOnCompleteListener(requireActivity(), new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful()) {
                             lastKnownLocation = task.getResult();
                             if (lastKnownLocation != null) {
-                                LatLng currentLatLng = new LatLng(lastKnownLocation.getLatitude(),
-                                        lastKnownLocation.getLongitude());
-                                map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                        currentLatLng, DEFAULT_ZOOM));
+                                LatLng currentLatLng = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+                                map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, DEFAULT_ZOOM));
                             }
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
-                            map.moveCamera(CameraUpdateFactory
-                                    .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
                             map.getUiSettings().setMyLocationButtonEnabled(false);
                         }
                     }
