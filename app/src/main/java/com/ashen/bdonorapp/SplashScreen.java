@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.ashen.bdonorapp.UI.ChatActivity;
 import com.ashen.bdonorapp.authenticationModule.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,7 +23,8 @@ public class SplachScreen extends AppCompatActivity {
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
             if (currentUser != null) {
                 // User is logged in, navigate to Home screen
-                startActivity(new Intent(SplachScreen.this, MainActivity.class));
+                //startActivity(new Intent(SplachScreen.this, MainActivity.class));.
+                startActivity(new Intent(SplachScreen.this, ChatActivity.class));
             } else {
                 // User is not logged in, navigate to Login screen
                 startActivity(new Intent(SplachScreen.this, LoginActivity.class));
