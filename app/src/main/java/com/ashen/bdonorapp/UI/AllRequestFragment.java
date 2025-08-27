@@ -32,8 +32,6 @@ import com.google.firebase.firestore.Query;
 public class AllRequestFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    // private BloodRequestAdapter adapter;
-
     private FirestoreRecyclerAdapter<BloodRequest, BloodRequestAdapter.RequestViewHolder> adapter;
     private TextView emptyRequestsTextView;
     private FirebaseFirestore db;

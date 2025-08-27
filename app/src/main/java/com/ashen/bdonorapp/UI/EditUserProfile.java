@@ -12,10 +12,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -24,23 +22,19 @@ import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.ashen.bdonorapp.Controller.OnUserDataLoadedListener;
 import com.ashen.bdonorapp.Controller.OnUserDataUpdateListener;
 import com.ashen.bdonorapp.R;
 import com.ashen.bdonorapp.Controller.UserDataManager;
-import com.ashen.bdonorapp.authenticationModule.RegisterActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
-
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.EventListener;
 
 public class EditUserProfile extends AppCompatActivity {
-    TextView editUsername, editEmail,editCity;
-    ShapeableImageView profileImageView;
+   private TextView editUsername, editEmail,editCity;
+    private ShapeableImageView profileImageView;
 
     private AppCompatSpinner bloodTypeSpinner, spinner_gender;
      String  encodedImage;
@@ -78,25 +72,30 @@ public class EditUserProfile extends AppCompatActivity {
 
         userDataManager = new UserDataManager();
 
-        // Populate Spinners
+        // Populate Spinner with blood types
         ArrayAdapter<CharSequence> bloodTypeAdapter = ArrayAdapter.createFromResource(this,
                 R.array.blood_types, android.R.layout.simple_spinner_item);
         bloodTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         bloodTypeSpinner.setAdapter(bloodTypeAdapter);
 
+        // Populate Spinner with genders
         ArrayAdapter<CharSequence> genderAdapter = ArrayAdapter.createFromResource(this,R.array.gender, android.R.layout.simple_spinner_item);
         genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_gender.setAdapter(genderAdapter);
 
 
+        // Load existing user data
         loadUserData();
 
+
+        // Set up profile image click listener to select a new image
         profileImageView.setOnClickListener(v ->{
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             picImage.launch(intent);
         });
 
+        // Set up button click listener to update profile
         btn_changeProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,8 +105,11 @@ public class EditUserProfile extends AppCompatActivity {
 
     }
 
+    // Load user data from UserDataManager and populate UI fields
     private void loadUserData() {
         userDataManager.fetchUserData(new OnUserDataLoadedListener() {
+
+            // This method is called when user data is successfully loaded
             @Override
             public void onUserDataLoaded(String userName, String userEmail, String bloodType,String city, String profileImageUrl,String gender) {
                 if (userName != null) editUsername.setText(userName);
@@ -142,6 +144,8 @@ public class EditUserProfile extends AppCompatActivity {
         });
     }
 
+    // Update user profile with new data
+
     private void updateProfile() {
         String name = editUsername.getText().toString().trim();
         String email = editEmail.getText().toString().trim();
@@ -152,7 +156,7 @@ public class EditUserProfile extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         btn_changeProfile.setVisibility(View.GONE);
 
-
+        //Update user data via UserDataManager
         userDataManager.updateUserProfile(name, email, bloodType, city,encodedImage, gender,new OnUserDataUpdateListener () {
                     @Override
                     public void onSuccess(String message) {

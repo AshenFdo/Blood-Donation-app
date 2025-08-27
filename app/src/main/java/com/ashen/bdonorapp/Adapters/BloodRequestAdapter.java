@@ -29,6 +29,7 @@ public class BloodRequestAdapter extends FirestoreRecyclerAdapter<BloodRequest, 
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         try{
+            // Check if the current user is the owner of the request
             if(model.getPostedByUserId().equals(currentUserId)){
                 holder.bloodTypeTextView.setText(model.getBloodType());
                 holder.userNameTextView.setText(model.getUserName());
@@ -36,11 +37,13 @@ public class BloodRequestAdapter extends FirestoreRecyclerAdapter<BloodRequest, 
                 holder.urgentTypeTextView.setText(model.getUrgentType());
                 holder.checkOwner.setVisibility(View.VISIBLE);
                 holder.itemView.setOnClickListener(v -> {
+                    // Open OwnerReqDetailsActivity
                     Intent intent = new Intent(holder.itemView.getContext(), OwnerReqDetailsActivity.class);
                     intent.putExtra("requestId", getSnapshots().getSnapshot(position).getId());
                     holder.itemView.getContext().startActivity(intent);
                 });
             }else {
+                // For other users, open RequestDetailsActivity
                 holder.bloodTypeTextView.setText(model.getBloodType());
                 holder.userNameTextView.setText(model.getUserName());
                 holder.userCityTextView.setText(model.getUserCity());
@@ -79,6 +82,7 @@ public class BloodRequestAdapter extends FirestoreRecyclerAdapter<BloodRequest, 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_blood_request_card, parent, false);
         return new RequestViewHolder(view);
     }
+
 
     public static class RequestViewHolder extends RecyclerView.ViewHolder {
         TextView bloodTypeTextView, userNameTextView, userCityTextView, urgentTypeTextView, checkOwner;

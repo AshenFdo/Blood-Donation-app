@@ -216,9 +216,9 @@ public class MapPageFragment extends Fragment implements OnMapReadyCallback {
         getLocationPermission();
         //Update the map's UI settings based on permission
         updateLocationUI();
-
         //Get Device Location and set the map's camera
         getDeviceLocation();
+
 
         // Handle map clicks to select locations
         map.setOnMapClickListener(latLng -> {
@@ -254,6 +254,7 @@ public class MapPageFragment extends Fragment implements OnMapReadyCallback {
 
     /**
      * Checks and requests location permission from the user.
+     * Check the device's current permission status for fine location access.
      * Updates the locationPermissionGranted flag based on current permission status.
      */
     private void getLocationPermission() {
@@ -318,6 +319,7 @@ public class MapPageFragment extends Fragment implements OnMapReadyCallback {
             if (locationPermissionGranted) {
 
                 // Get the last known location from the FusedLocationProviderClient
+                //Google asynchronously fetches the device's last known location
                 Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
 
                 // Add a listener to handle the result of the location request

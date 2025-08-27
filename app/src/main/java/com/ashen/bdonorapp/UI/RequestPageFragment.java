@@ -44,17 +44,12 @@ public class RequestPageFragment extends Fragment {
     private LinearLayout addNewRequest;
     private LinearLayout mapFeature;
 
-
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Nullable
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_request_page, container, false);
@@ -91,30 +86,7 @@ public class RequestPageFragment extends Fragment {
 
         return  view;
     }
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        adapter.startListening(); // Start listening for data changes
-//
-//    }
-//
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        if (adapter != null) {
-//            adapter.stopListening(); // Stop listening for data changes
-//        }
-//    }
-//
-//    @SuppressLint("NotifyDataSetChanged")
-//    @Override
-//    public void onResume(){
-//        super.onResume();
-//        if (adapter != null) {
-//            adapter.notifyDataSetChanged(); // Refresh the adapter to show any new data
-//            Log.d("RequestPageFragment", "Adapter notified of data set change");
-//        }
-//    }
+
 
     private void setupRecyclerView() {
         RequestDataManager requestManager = new RequestDataManager();

@@ -150,7 +150,7 @@ public class ProfilePageFragment extends Fragment {
             public void onUserDataLoaded(String userName, String userEmail, String bloodType, String city,String profileImageUrl,String gender) {
                 // This method runs when the data is successfully fetched
 
-                // 1. Store the values in the Activity's global variables
+                //Store the values in the Activity's global variables
                 currentUserName = userName;
                 currentUserCity = city;
                 currentUserBloodType = bloodType;
@@ -168,7 +168,7 @@ public class ProfilePageFragment extends Fragment {
                 Log.d(TAG, "Email: " + currentUserCity);
                 Log.d(TAG, "Blood Type: " + currentUserBloodType);
 
-                // 2. Optionally, update UI elements with the data
+                // Optionally, update UI elements with the data
                 if (textView_userName != null) {
                   textView_userName.setText(currentUserName);
                 }

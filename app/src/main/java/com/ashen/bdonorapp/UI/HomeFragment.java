@@ -121,11 +121,6 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         // Initialize temperature display
         initializeTemperatureSensors();
 
-        // If no sensor available, use alternative method
-        if (!isTemperatureSensorAvailable) {
-           // fetchWeatherTemperature(); // or setupMockTemperature();
-        }
-
         setupRecyclerView(); // Call your setup method
     }
     @SuppressLint("NotifyDataSetChanged")
@@ -177,6 +172,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
             @Override
             public void onUserDataLoaded(String userName, String userEmail, String bloodType, String city, String profileImageUrl,String gender) {
 
+                // Convert Base64 string to Bitmap and set to ImageView
                 if(profileImageUrl != null){
                     byte[] bytes= Base64.decode(profileImageUrl, Base64.DEFAULT);
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -184,16 +180,15 @@ public class HomeFragment extends Fragment implements SensorEventListener {
                 }
 
 
-                // 1. Store the values in the Activity's global variables
+                // Store the values in the Activity's global variables
                 currentUserName = userName;
                 currentUserBloodType = bloodType;
 
-                // Now you can use these variables throughout this Activity
                 Log.d("HomeFragment", "User data loaded!");
                 Log.d("HomeFragment", "Name: " + currentUserName);
                 Log.d("HomeFragment", "Blood Type: " + currentUserBloodType);
 
-                // 2. Optionally, update UI elements with the data
+                // update UI elements with the data
                 if (textView_userName != null) {
                     textView_userName.setText(currentUserName);
                 }
@@ -217,6 +212,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
 
 
 private void setupRecyclerView() {
+        //Set up Firestore query and adapter for Blood Requests
     RequestDataManager requestManager = new RequestDataManager();
     Query query = requestManager.getActiveRequestsQuery();
 
@@ -270,31 +266,5 @@ private void setupRecyclerView() {
                 Log.d("HomeFragment", "No temperature sensor available");
             }
         }
-    }
-
-//    private void fetchWeatherTemperature() {
-//        // Example using a weather API
-//        // You'll need to implement actual API call
-//        new Thread(() -> {
-//            try {
-//                // Simulate API call
-//                double temperature = getCurrentTemperatureFromAPI();
-//
-//                getActivity().runOnUiThread(() -> {
-//                    tempText.setText(String.format("%.1f°C", temperature));
-//                });
-//            } catch (Exception e) {
-//                Log.e("Home", "Failed to fetch temperature", e);
-//                getActivity().runOnUiThread(() -> {
-//                    tempText.setText("--°C");
-//                });
-//            }
-//        }).start();
-//    }
-
-    private double getCurrentTemperatureFromAPI() {
-        // Implement actual weather API call here
-        // For now, return a dummy value
-        return 25.3; // Replace with actual API call
     }
 }

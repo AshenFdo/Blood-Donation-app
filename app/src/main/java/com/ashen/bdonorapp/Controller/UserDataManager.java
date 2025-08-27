@@ -309,16 +309,6 @@ public class UserDataManager {
         }
 
 
-
-    public Query getAllUsersExceptCurrent() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user == null) {
-            Log.e("UserDataManager", "No user is currently signed in");
-            return null;
-        }
-
-        return db.collection("users").whereNotEqualTo("userId", user.getUid());
-    }
 }
 
 

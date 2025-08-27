@@ -29,6 +29,6 @@ public class SplashScreen extends AppCompatActivity {
                 startActivity(new Intent(SplashScreen.this, LoginActivity.class));
             }
             finish(); // Prevent returning to this splash screen
-        }, 500); // Delay for 500 milliseconds
+        }, 400); // Delay for 500 milliseconds
     }
 }

@@ -93,6 +93,8 @@ public class AddBloodRequestActivity extends AppCompatActivity {
         db.collection("users").document(postedByUserId).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult().exists()) {
+
+                        // Retrieve user details (Name, City)
                         String userName = task.getResult().getString("userName");
                         String userCity = task.getResult().getString("city");
 
@@ -101,6 +103,8 @@ public class AddBloodRequestActivity extends AppCompatActivity {
                                     title, postedByUserId, description, urgentType);
 
                             RequestDataManager requestManager = new RequestDataManager();
+
+
                             requestManager.createBloodRequest(request, new RequestCallback() {
                                 @Override
                                 public void onSuccess(String message) {

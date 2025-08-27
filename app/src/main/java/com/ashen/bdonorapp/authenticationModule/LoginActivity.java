@@ -90,15 +90,14 @@ public class LoginActivity extends AppCompatActivity {
                             if (user != null && user.isEmailVerified()) {
 
                                 // Navigate to MainActivity
-
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 finish();
+
                             } else {
 
                                 // Provide feedback for unverified email
-
                                 Toast.makeText(LoginActivity.this,
                                         "Please verify your email before logging in. Check your inbox.",
                                         Toast.LENGTH_LONG).show();
@@ -109,7 +108,6 @@ public class LoginActivity extends AppCompatActivity {
                                 progressBar.setVisibility(View.GONE);
                                 loginButton.setVisibility(View.VISIBLE);
                             }
-
                         }  else {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
