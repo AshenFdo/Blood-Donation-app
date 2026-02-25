@@ -20,12 +20,17 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class BloodRequestAdapter extends FirestoreRecyclerAdapter<BloodRequest, BloodRequestAdapter.RequestViewHolder> {
 
+
+    // Constructor to initialize the adapter with FirestoreRecyclerOptions
     public BloodRequestAdapter(@NonNull FirestoreRecyclerOptions<BloodRequest> options) {
         super(options);
     }
 
+
+    // Bind the data from the BloodRequest model to the ViewHolder
     @Override
     protected void onBindViewHolder(@NonNull RequestViewHolder holder, int position, @NonNull BloodRequest model) {
+        // Get the current user's ID
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         try{
@@ -66,7 +71,6 @@ public class BloodRequestAdapter extends FirestoreRecyclerAdapter<BloodRequest, 
     public void onDataChanged() {
         super.onDataChanged();
         if(getItemCount() == 0){
-            // Handle empty state if needed
             Log.d("BloodRequest", "No requests available.");
         }else {
             Log.d("BloodRequest", "Requests available: " + getItemCount());
@@ -75,7 +79,7 @@ public class BloodRequestAdapter extends FirestoreRecyclerAdapter<BloodRequest, 
 
 
 
-
+    // Inflate the layout for each item in the RecyclerView and create a ViewHolder
     @NonNull
     @Override
     public RequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -83,7 +87,7 @@ public class BloodRequestAdapter extends FirestoreRecyclerAdapter<BloodRequest, 
         return new RequestViewHolder(view);
     }
 
-
+    // ViewHolder class to hold the views for each item in the RecyclerView
     public static class RequestViewHolder extends RecyclerView.ViewHolder {
         TextView bloodTypeTextView, userNameTextView, userCityTextView, urgentTypeTextView, checkOwner;
         public RequestViewHolder(@NonNull View itemView) {
@@ -93,6 +97,9 @@ public class BloodRequestAdapter extends FirestoreRecyclerAdapter<BloodRequest, 
             userCityTextView = itemView.findViewById(R.id.text_view_card_user_city);
             urgentTypeTextView = itemView.findViewById(R.id.text_view_urgentType);
             checkOwner = itemView.findViewById(R.id.text_view_card_owner_label);
+
+            Log.d("BloodRequest", "ViewHolder created for item: " + getAdapterPosition());
+
         }
     }
 }

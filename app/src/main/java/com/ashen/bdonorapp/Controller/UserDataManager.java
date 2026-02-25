@@ -28,18 +28,25 @@ public class UserDataManager {
     private FirebaseAuth mAuth;
 
     public UserDataManager() {
+
+        // Initialize Firestore and Auth instances
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
     }
 
 
+
+    /*
+    * Method for fetching user data from Firebase Auth and Firestore.
+    * */
     public void fetchUserData(OnUserDataLoadedListener listener) {
         FirebaseUser user = mAuth.getCurrentUser();
 
         if (user == null) {
             // No user is signed in
             listener.onUserDataLoadFailed("No user is currently signed in.");
-            return; // Stop here if no user
+
+            return;
         }
 
         // User is signed in, get basic Auth info
@@ -49,7 +56,7 @@ public class UserDataManager {
         Source source = Source.DEFAULT;// Use CACHE to get data from local cache if available, otherwise use SERVER
 
 
-        // Now fetch custom data  from Firestore using the UID
+        // fetch custom data  from Firestore using the UID
         db.collection("users")
                 .document(userUid)
                 .get(source)
@@ -118,6 +125,11 @@ public class UserDataManager {
 
     }
 
+
+    /*
+    * Method for updating user data in Firebase Auth and Firestore.
+    *  It updates the email in Auth and other fields in Firestore.
+    * */
     public void updateUserProfile(String name, String email, String bloodType, String city, String userProfileUrl,String gender, OnUserDataUpdateListener listener) {
         FirebaseUser user = mAuth.getCurrentUser();
 
@@ -172,7 +184,7 @@ public class UserDataManager {
             }
         };
 
-
+        // Update email in Auth
         user.updateEmail(email)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -293,20 +305,6 @@ public class UserDataManager {
                     });
         }
     }
-
-
-        //Get current Blood type
-        public String getCurrentUserName () {
-            FirebaseUser user = mAuth.getCurrentUser();
-            if (user != null) {
-                String userUid = user.getUid();
-                DocumentSnapshot documentSnapshot = db.collection("users").document(userUid).get().getResult();
-                if (documentSnapshot != null && documentSnapshot.exists()) {
-                    return documentSnapshot.getString("Name");
-                }
-            }
-            return null; // Return null if no user or blood type not found
-        }
 
 
 }

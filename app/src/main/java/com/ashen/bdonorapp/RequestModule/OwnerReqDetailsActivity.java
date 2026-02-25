@@ -45,10 +45,11 @@ public class OwnerReqDetailsActivity extends AppCompatActivity {
             return insets;
         });
 
-
+        // Initialize Firebase Auth and Firestore
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
+        // Initialize UI components
         bloodTypeTextView = findViewById(R.id.detail_blood_type);
         userNameTextView = findViewById(R.id.detail_user_name);
         userCityTextView = findViewById(R.id.detail_user_city);
@@ -64,6 +65,7 @@ public class OwnerReqDetailsActivity extends AppCompatActivity {
         // Get data from the Intent
         requestId = getIntent().getStringExtra("requestId");
 
+        // Set click listener for delete button
       button_delete_request.setOnClickListener(v -> {
           RequestDataManager requestDataManager = new RequestDataManager();
           requestDataManager.deleteBloodRequest(requestId, new RequestCallback() {
@@ -80,9 +82,12 @@ public class OwnerReqDetailsActivity extends AppCompatActivity {
           });
       });
 
+      // Load request details from Firestore
         loadRequestDetails();
     }
 
+
+    // Method to load request details from Firestore and display them in the UI
     private void loadRequestDetails() {
         FirebaseFirestore.getInstance().collection("bloodRequests").document(requestId)
                 .get()

@@ -15,47 +15,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:fontFamily="@font/lato_bold"
         android:text="Request"
         android:textAlignment="center"
         android:textColor="@color/primary_red"
         android:textSize="24sp" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView2"
-        android:layout_marginTop="36dp"
-        android:gravity="center"
-        android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/addNewRequest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/corner_rounded_bg"
-            android:backgroundTint="@color/primary_red"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="20dp">
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/plus_icon"
-                app:tint="@color/white" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="New Request"
-                android:textColor="@color/white"
-                android:textSize="16dp" />
-        </LinearLayout>
-
-    </LinearLayout>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
@@ -76,13 +43,36 @@
             android:layout_height="wrap_content"
             android:text="My requsts"/>
     </com.google.android.material.tabs.TabLayout>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <!-- The ViewPager2 will hold the fragments for each tab -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            style="?attr/floatingActionButtonLargeStyle"
+
+            android:id="@+id/floating_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            app:tint="@color/white"
+            android:backgroundTint="@color/primary_red"
+            android:contentDescription="Add New Request"
+            app:srcCompat="@drawable/plus_icon"
+            app:materialThemeOverlay = "@style/ThemeOverlay.Material3.FloatingActionButton.Primary"
+            />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    
+    
 
 
 </LinearLayout>

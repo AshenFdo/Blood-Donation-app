@@ -35,9 +35,11 @@ public class RequestDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request_details);
 
+        // Initialize Firebase Auth and Firestore
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
+        // Initialize UI components
         bloodTypeTextView = findViewById(R.id.detail_blood_type);
         userNameTextView = findViewById(R.id.detail_user_name);
         userCityTextView = findViewById(R.id.detail_user_city);
@@ -54,6 +56,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
 
         // Get data from the Intent
         requestId = getIntent().getStringExtra("requestId");
+
 
         loadRequestDetails();
 

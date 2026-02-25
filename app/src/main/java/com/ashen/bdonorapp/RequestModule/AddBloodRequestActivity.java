@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -22,29 +23,26 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AddBloodRequestActivity extends AppCompatActivity {
 
-    private static final String TAG = "AddBloodRequestActivity";
+    private static final String TAG = "BloodRequest";
 
     private Spinner bloodTypeSpinner;
     private EditText descriptionEditText , titleEditText;
-
-
-
     private RadioButton urgent_radio_button;
     private Button submitButton;
-
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-
-    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_blood_request);
 
+        // Initialize Firebase Auth and Firestore
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
+
+        // Initialize UI components
         bloodTypeSpinner = findViewById(R.id.spinner_blood_type);
         descriptionEditText = findViewById(R.id.edit_text_description);
         urgent_radio_button = findViewById(R.id.urgent_radio_button);
@@ -58,7 +56,7 @@ public class AddBloodRequestActivity extends AppCompatActivity {
         bloodTypeSpinner.setAdapter(bloodTypeAdapter);
 
 
-
+        // Set click listener for submit button
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +65,8 @@ public class AddBloodRequestActivity extends AppCompatActivity {
         });
     }
 
+
+    // Method to handle blood request submission
     private void submitBloodRequest() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
@@ -74,6 +74,8 @@ public class AddBloodRequestActivity extends AppCompatActivity {
             return;
         }
 
+
+        // Collect input data
         String bloodType = bloodTypeSpinner.getSelectedItem().toString();
         String description = descriptionEditText.getText().toString().trim();
         String urgentType = urgent_radio_button.isChecked() ? "Urgent" : "Normal";
@@ -99,12 +101,13 @@ public class AddBloodRequestActivity extends AppCompatActivity {
                         String userCity = task.getResult().getString("city");
 
                         if (userName != null && userCity != null) {
+                            // Create BloodRequest object
                             BloodRequest request = new BloodRequest(userName, userCity, bloodType,
                                     title, postedByUserId, description, urgentType);
 
                             RequestDataManager requestManager = new RequestDataManager();
 
-
+                            // Submit request to Firestore
                             requestManager.createBloodRequest(request, new RequestCallback() {
                                 @Override
                                 public void onSuccess(String message) {
@@ -121,11 +124,13 @@ public class AddBloodRequestActivity extends AppCompatActivity {
                                 }
                             });
                         } else {
+                            // Handle case where user data is incomplete
                             Toast.makeText(AddBloodRequestActivity.this, "User profile incomplete", Toast.LENGTH_SHORT).show();
                             submitButton.setEnabled(true);
                             submitButton.setText("Submit Blood Request");
                         }
                     } else {
+                        // Handle case where user document doesn't exist or retrieval fails
                         Toast.makeText(AddBloodRequestActivity.this, "Could not retrieve user data", Toast.LENGTH_SHORT).show();
                         submitButton.setEnabled(true);
                         submitButton.setText("Submit Blood Request");

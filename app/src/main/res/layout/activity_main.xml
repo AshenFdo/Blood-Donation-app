@@ -23,11 +23,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         app:itemActiveIndicatorStyle="@style/CustomActiveIndicator"
-        app:activeIndicatorLabelPadding="2dp"
+        app:activeIndicatorLabelPadding="0dp"
         android:background="@color/white"
         app:itemIconTint="@color/primary_red"
         app:itemTextColor="@color/primary_red"
-        app:labelVisibilityMode="selected"
         app:menu="@menu/bottom_navigation"
         app:itemRippleColor="@color/white"/>
 

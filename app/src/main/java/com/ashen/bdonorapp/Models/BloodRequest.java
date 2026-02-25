@@ -15,14 +15,12 @@ import java.util.Date;
         private String bloodType;
         private String description;
         private String urgentType; // e.g., "Urgent", "Normal"
-        private String status;// Unique identifier for the request
-
-        private Date acceptedAt;
-
 
         @ServerTimestamp // Automatically sets the timestamp when created
         private Date timestamp;// To link the request to a specific user
 
+
+        // Default constructor required for Firestore serialization
         public  BloodRequest(){}
 
 
@@ -43,10 +41,19 @@ import java.util.Date;
             this.urgentType = urgentType;
             this.postedByUserId = postedByUserId;
             this.title = title;
-            this.status = null;
             this.acceptedByUserId = null;
-            this.acceptedAt = null;
 
+        }
+
+
+
+        public String getBloodRequest(){
+            return "Blood Request: " + title + "\n" +
+                    "Posted by: " + userName + "\n" +
+                    "City: " + userCity + "\n" +
+                    "Blood Type: " + bloodType + "\n" +
+                    "Urgency: " + urgentType + "\n" +
+                    "Description: " + description;
         }
 
         // Getters and setters

@@ -37,16 +37,12 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-public class HomeFragment extends Fragment implements SensorEventListener {
+public class HomeFragment extends Fragment{
 
-    private TextView textView_userName, textView_BloodType, tempText;
+    private TextView textView_userName, textView_BloodType;
     private String currentUserName, currentUserBloodType;
 
     private ShapeableImageView profileImageView;
-
-    private SensorManager sensorManager;
-    private Sensor temperatureSensor;
-    private Boolean isTemperatureSensorAvailable;
 
 
     private FirestoreRecyclerAdapter<BloodRequest, BloodRequestAdapter.RequestViewHolder> adapter;
@@ -108,7 +104,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         super.onViewCreated(view, savedInstanceState);
 
         // Initialize views
-        tempText = view.findViewById(R.id.tempText);
+
         textView_userName = view.findViewById(R.id.userName);
         textView_BloodType = view.findViewById(R.id.profile_BloodType);
         recyclerView = view.findViewById(R.id.recycler_view_requests_home);
@@ -116,10 +112,10 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         profileImageView = view.findViewById(R.id.profile_image);
         db = FirebaseFirestore.getInstance();
 
-        tempText = view.findViewById(R.id.tempText);
+
         // Initialize sensor manager
         // Initialize temperature display
-        initializeTemperatureSensors();
+
 
         setupRecyclerView(); // Call your setup method
     }
@@ -130,20 +126,12 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         if (adapter != null) {
             adapter.notifyDataSetChanged();
         }
-        if (isTemperatureSensorAvailable) {
-            sensorManager.registerListener(this, temperatureSensor, SensorManager.SENSOR_DELAY_NORMAL);
-            Log.d("Home", "Temperature sensor registered in onResume");
-        }
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        // Unregister sensor listener in onPause to match onResume
-        if (isTemperatureSensorAvailable) {
-            sensorManager.unregisterListener(this);
-            Log.d("Home", "Temperature sensor unregistered in onPause");
-        }
     }
 
     @Override
@@ -230,41 +218,6 @@ private void setupRecyclerView() {
 }
 
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE ||
-                event.sensor.getType() == Sensor.TYPE_TEMPERATURE) {
-            float temperature = event.values[0];
-            tempText.setText(String.format(temperature+" °C"));
-            Log.d("HomeFragment", "Temperature: " + temperature);
-        }
-    }
 
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
-    }
-
-    private void initializeTemperatureSensors() {
-        sensorManager = (SensorManager) getActivity().getSystemService(getContext().SENSOR_SERVICE);
-
-        // Try ambient temperature first
-        temperatureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-
-        if (temperatureSensor != null) {
-            isTemperatureSensorAvailable = true;
-            Log.d("HomeFragment", "Ambient temperature sensor found: " + temperatureSensor.getName());
-        } else {
-            // Try device temperature as fallback
-            temperatureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_TEMPERATURE);
-            if (temperatureSensor != null) {
-                isTemperatureSensorAvailable = true;
-                Log.d("HomeFragment", "Device temperature sensor found: " + temperatureSensor.getName());
-            } else {
-                isTemperatureSensorAvailable = false;
-                tempText.setText("No temp sensor");
-                Log.d("HomeFragment", "No temperature sensor available");
-            }
-        }
-    }
 }

@@ -26,6 +26,7 @@ import com.ashen.bdonorapp.Controller.RequestDataManager;
 import com.ashen.bdonorapp.RequestModule.AddBloodRequestActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -44,6 +45,8 @@ public class RequestPageFragment extends Fragment {
     private LinearLayout addNewRequest;
     private LinearLayout mapFeature;
 
+    private FloatingActionButton addRequestButton;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +58,7 @@ public class RequestPageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_request_page, container, false);
 
 
-        addNewRequest = view.findViewById(R.id.addNewRequest);
+        addRequestButton = view.findViewById(R.id.floating_action_button);
         db = FirebaseFirestore.getInstance();
 
 
@@ -78,7 +81,7 @@ public class RequestPageFragment extends Fragment {
         }).attach();
 
         // Set up the click listener for the "Add New Request" button
-        addNewRequest.setOnClickListener(v -> {
+        addRequestButton.setOnClickListener(v -> {
             // Start the AddBloodRequestActivity when the button is clicked
             Intent intent = new Intent(requireContext(), AddBloodRequestActivity.class);
             startActivity(intent);
@@ -88,18 +91,6 @@ public class RequestPageFragment extends Fragment {
     }
 
 
-    private void setupRecyclerView() {
-        RequestDataManager requestManager = new RequestDataManager();
-        Query query = requestManager.getActiveRequestsQuery();
-
-        FirestoreRecyclerOptions<BloodRequest> options = new FirestoreRecyclerOptions.Builder<BloodRequest>()
-                .setQuery(query, BloodRequest.class)
-                .setLifecycleOwner(this)
-                .build();
-
-        adapter = new BloodRequestAdapter(options);
-        recyclerView.setAdapter(adapter);
-    }
 
     // A private inner class to manage the fragments for each tab
     private static class ViewPagerAdapter extends FragmentStateAdapter {

@@ -33,6 +33,7 @@ android {
     }
     buildFeatures {
         buildConfig = true
+        viewBinding = true
     }
 }
 
@@ -52,6 +53,7 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(platform("com.google.firebase:firebase-bom:33.15.0"))
+    implementation ("com.google.firebase:firebase-messaging:25.0.1")
     implementation("com.google.firebase:firebase-analytics")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation ("com.firebaseui:firebase-ui-firestore:8.0.2") // Use the latest version
@@ -64,6 +66,14 @@ dependencies {
     implementation ("org.json:json:20230227")
     constraints {
         implementation("com.google.android.material:material:1.12.0") // Use the version you want
+
     }
+
+    //  libraries for responsive design
+    implementation ("com.intuit.sdp:sdp-android:1.1.1")
+    implementation ("com.intuit.ssp:ssp-android:1.1.1")
+
+    // library for rounded image views
+    implementation ("com.makeramen:roundedimageview:2.3.0")
 
 }

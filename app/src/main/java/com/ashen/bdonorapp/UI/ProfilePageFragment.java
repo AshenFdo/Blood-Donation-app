@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Base64;
 import android.util.Log;
@@ -18,22 +19,32 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ashen.bdonorapp.Adapters.BloodRequestAdapter;
 import com.ashen.bdonorapp.Controller.OnUserDataLoadedListener;
+import com.ashen.bdonorapp.Controller.RequestDataManager;
+import com.ashen.bdonorapp.Models.BloodRequest;
 import com.ashen.bdonorapp.R;
 import com.ashen.bdonorapp.Controller.UserDataManager;
 import com.ashen.bdonorapp.authenticationModule.LoginActivity;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.Query;
 
 
 public class ProfilePageFragment extends Fragment {
+    private RecyclerView recyclerView;
+    private FirestoreRecyclerAdapter<BloodRequest, BloodRequestAdapter.RequestViewHolder> adapter;
+    private FirebaseAuth mAuth;
 
     UserDataManager userDataManager;
 
     private TextView textView_userName;
     private TextView textView_city;
     private TextView texView_bloodType;
+
 
     ShapeableImageView profileImageView;
 
@@ -97,6 +108,9 @@ public class ProfilePageFragment extends Fragment {
             // Inflate the layout for this fragment
             View view = inflater.inflate(R.layout.fragment_profile_page, container, false);
 
+
+            mAuth = FirebaseAuth.getInstance();
+
             // Initialize views
             textView_city = view.findViewById(R.id.profile_City);
             textView_userName = view.findViewById(R.id.profile_UserName);
@@ -129,16 +143,25 @@ public class ProfilePageFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        if (adapter != null) {
+            adapter.startListening();
+        }
     }
 
     @Override
     public void onResume(){
         super.onResume();
         fetchAndDisplayUserData();
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
     }
     @Override
     public void onPause() {
         super.onPause();
+        if (adapter != null) {
+            adapter.stopListening();
+        }
     }
 
 
@@ -193,6 +216,8 @@ public class ProfilePageFragment extends Fragment {
             }
         });
     }
+
+
 
 
 }

@@ -33,13 +33,8 @@ public class AllRequestFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private FirestoreRecyclerAdapter<BloodRequest, BloodRequestAdapter.RequestViewHolder> adapter;
-    private TextView emptyRequestsTextView;
-    private FirebaseFirestore db;
 
     private FirebaseAuth mAuth;
-
-    private LinearLayout addNewRequest;
-    private LinearLayout mapFeature;
 
 
 
@@ -104,6 +99,7 @@ public class AllRequestFragment extends Fragment {
 
         adapter = new BloodRequestAdapter(options);
         recyclerView.setAdapter(adapter);
+        Log.d("AllRequestFragment", "RecyclerView adapter set up with Firestore query");
     }
 
 
