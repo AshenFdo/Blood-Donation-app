@@ -22,7 +22,7 @@ This project was developed as a **university project**, following **Object-Orien
 
 The UI/UX of this application was prototyped in Figma before development. The prototype covers all key screens including authentication flows, home feed, blood request creation, map view, and user profile.
 
-> 🔗 **[View Figma Prototype](https://www.figma.com/your-prototype-link-here)**
+> 🔗 **[View Figma Prototype]([https://www.figma.com/your-prototype-link-here](https://www.figma.com/design/6AYbKMgtldWMblmpbz6wOB/B-donor?node-id=0-1&t=soAzYKaWg1hl5TFO-1))**
 >
 > *(Replace the link above with your actual Figma prototype URL)*
 
